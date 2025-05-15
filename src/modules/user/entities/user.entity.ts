@@ -1,10 +1,8 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity } from '../../../database/entities/base.entity';
 
 @Entity()
-export class User {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
-    
+export class User extends BaseEntity {
     @Column()
     firstName: string;
 
@@ -21,13 +19,13 @@ export class User {
     password: string;
 
     @Column({ default: null})
-    avatar: string;
+    avatar?: string;
     
     @Column({ default: false })
-    isVerified: boolean;
+    isVerified?: boolean;
     
     @Column({ default: false })
-    isAdmin: boolean;
+    isAdmin?: boolean;
 
 
 
