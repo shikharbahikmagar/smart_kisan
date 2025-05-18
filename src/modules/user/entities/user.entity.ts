@@ -14,12 +14,28 @@ export class User extends BaseEntity {
 
     @Column({ unique: true })
     email: string;
+
+    @Column({ type: 'timestamp', nullable: true })
+    email_verified_at?: Date | null;
+    
+    @Column({ type: 'varchar', nullable: true})
+    email_verification_token?: String | null;
+
+    @Column({ type: 'timestamp', nullable: true})
+    email_verification_token_expires_at?: Date | null;
+
+    @Column({ type: 'varchar', nullable: true})
+    password_reset_token?: String | null;
+
+    @Column({ type: 'timestamp', nullable: true})
+    password_reset_token_expires_at?: Date | null;
+
     
     @Column()
     password: string;
 
-    @Column({ default: null})
-    avatar?: string;
+    @Column({ type:'varchar',nullable: true })
+    avatar?: string | null;
     
     @Column({ default: false })
     isVerified?: boolean;

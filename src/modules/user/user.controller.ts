@@ -22,6 +22,7 @@ import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
 import { User} from '../../common/decorators/user.decorator';
 
+//controller for user module
 @Controller('user')
 export class UserController {
   constructor
@@ -83,8 +84,7 @@ export class UserController {
       }
   }
 
-
-
+  //user profile get
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getProfile(@User() user: any) {
@@ -94,7 +94,7 @@ export class UserController {
     return {
       message: 'User profile retrieved successfully',
       user: {
-        id: userDetails.id,
+        id: userDetails.id,         
         firstName: userDetails.firstName,
         lastName: userDetails.lastName,
         contactNumber: userDetails.contactNumber,
@@ -107,6 +107,57 @@ export class UserController {
 
 
       
+  }
+
+  //send email verification code
+  @UseGuards(JwtAuthGuard)
+  @Get('send-email-verification') 
+  async sendEmailVerification(@User() user:any){
+
+    const userDetails = await this.userService.sendEmailVerificationCode(user.userId);
+
+    return {
+      message: 'Email verification code sent successfully',
+      user: {
+        id: userDetails.id,
+        firstName: userDetails.firstName,
+        lastName: userDetails.lastName,
+        contactNumber: userDetails.contactNumber,
+        email: userDetails.email,
+        email_verified_at: userDetails.email_verified_at,
+        email_verification_token: userDetails.email_verification_token,
+        email_verification_token_expires_at: userDetails.email_verification_token_expires_at,
+          avatar: userDetails.avatar,
+          isVerified: userDetails.isVerified,
+        isAdmin: userDetails.isAdmin,
+      }
+    } 
+
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('verify-email')
+  async verifyEmail(@User() user:any){
+
+    const userDetails = await this.userService.verifyEmail(user.userId);
+
+    return {
+      message: 'User email verified successfully',
+      user: {
+        id: userDetails.id,
+        firstName: userDetails.firstName,
+        lastName: userDetails.lastName,
+        contactNumber: userDetails.contactNumber,
+        email: userDetails.email,
+        email_verified_at: userDetails.email_verified_at,
+        email_verification_token: userDetails.email_verification_token,
+        email_verification_token_expires_at: userDetails.email_verification_token_expires_at,
+          avatar: userDetails.avatar,
+          isVerified: userDetails.isVerified,
+        isAdmin: userDetails.isAdmin,
+      }
+    }
+
   }
 
 }
