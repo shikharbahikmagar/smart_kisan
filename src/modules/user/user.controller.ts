@@ -18,6 +18,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { EmailVerifyDto } from './dto/email-verify.dto';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
 import { User} from '../../common/decorators/user.decorator';
@@ -137,9 +138,9 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Post('verify-email')
-  async verifyEmail(@User() user:any){
+  async verifyEmail(@Body() token: string, @User() user:any){
 
-    const userDetails = await this.userService.verifyEmail(user.userId);
+    const userDetails = await this.userService.verifyEmail(token, user.userId);
 
     return {
       message: 'User email verified successfully',

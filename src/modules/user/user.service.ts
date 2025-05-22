@@ -26,6 +26,7 @@
     JwtService
     } from '@nestjs/jwt';
 
+    import { EmailVerifyDto } from './dto/email-verify.dto';
     import {Str} from '../../common/helpers/str.helper'
     import { MailService } from 'src/mail/mail.service';
 
@@ -289,7 +290,7 @@
   }
 
   //verify user email
-  async verifyEmail(userId: number): Promise < User > {
+  async verifyEmail(data: any, userId: number): Promise < User > {
 
     try {
 
@@ -298,6 +299,10 @@
                 id: userId
             }
         });
+
+    
+       // console.log(data.token);
+        
 
         if(!user)
         {
@@ -313,7 +318,7 @@
 
 
         // Check if the user is already verified
-        if (user.isVerified) {
+        if (user.email_verified_at) {
             throw new HttpException(
                 {
                   status: HttpStatus.BAD_REQUEST,
@@ -323,6 +328,36 @@
                 HttpStatus.BAD_REQUEST,
               );
         }
+
+        // Check if the verification token is valid
+        if(!user.email_verification_token || user.email_verification_token !== data.token) {
+            
+            throw new HttpException(
+                {
+                  status: HttpStatus.BAD_REQUEST,
+                  message: 'Invalid verification token',
+                  error: 'Bad Request',
+                },
+                HttpStatus.BAD_REQUEST,
+              );
+        }
+
+        // Check if the verification token has expired
+        if(user.email_verification_token_expires_at && user.email_verification_token_expires_at < new Date()) {
+            throw new HttpException(
+                {
+                  status: HttpStatus.BAD_REQUEST,
+                  message: 'Verification token has expired',
+                  error: 'Bad Request',
+                },
+                HttpStatus.BAD_REQUEST,
+              );
+        }
+
+        // Set the user as verified
+        user.email_verified_at = new Date();
+        user.email_verification_token = null;
+        user.email_verification_token_expires_at = null;
 
         // Verify the user's email
         user.email_verified_at = new Date();
@@ -336,11 +371,11 @@
         
     } catch (error) {
         // Log full error for internal debugging
-        console.error('Error verifying user email:', {
-          message: error.message,
-          stack: error.stack,
-          name: error.name,
-        });
+        // console.error('Error verifying user email:', {
+        //   message: error.message,
+        //   stack: error.stack,
+        //   name: error.name,
+        // });
       
         // Re-throw known HttpExceptions
         if (error instanceof HttpException) {
