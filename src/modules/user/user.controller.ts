@@ -136,6 +136,7 @@ export class UserController {
 
   }
 
+  //verify email
   @UseGuards(JwtAuthGuard)
   @Post('verify-email')
   async verifyEmail(@Body() token: string, @User() user:any){
@@ -156,6 +157,47 @@ export class UserController {
           avatar: userDetails.avatar,
           isVerified: userDetails.isVerified,
         isAdmin: userDetails.isAdmin,
+      }
+    }
+
+  }
+
+  //user forgot password
+  @Post('forgot-password')
+  async forgotPassword(@Body() data: {email: string}) {
+
+    await this.userService.forgotPassword(data.email);
+
+    return {
+      message: 'Password reset Token sent to your email',
+      data: {
+        email: data.email,
+      }
+    }
+  }
+
+  //reset user password
+  @Post('reset-password')
+  async resetPassword(@Body() data: {token: string, new_password: string, confirm_password: string}){
+
+    if(data.new_password !== data.confirm_password) {
+
+      throw new HttpException('Password and confirm password do not match', HttpStatus.BAD_REQUEST);
+    }
+
+    const user = await this.userService.resetPassword(data)
+
+    return {
+      message: 'Password reset successfully',
+      user: {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        contactNumber: user.contactNumber,
+        email: user.email,
+        avatar: user.avatar,
+        isVerified: user.isVerified,
+        isAdmin: user.isAdmin,
       }
     }
 

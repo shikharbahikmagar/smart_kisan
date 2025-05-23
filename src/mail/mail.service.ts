@@ -34,28 +34,54 @@ export class MailService {
     return template(context);
    }
 
-     async sendMail(to: string, subject: string, templateName: string, context: any)
-   {
+    async sendEmailVerificationMail(to: string, subject: string, templateName: string, context: any)
+    {
 
-        const html = this.compileTemplate(templateName, context);
+            const html = this.compileTemplate(templateName, context);
 
-        const mailOptions = {
-            from: process.env.MAIL_FROM || 'no-reply@example.com',
-            to,
-            subject,
-            html,
-          };
-      
-          
+            const mailOptions = {
+                from: process.env.MAIL_FROM || 'no-reply@example.com',
+                to,
+                subject,
+                html,
+            };
+        
+            
 
-        try {
+            try {
 
-            return this.transporter.sendMail(mailOptions);
-            console.log('Email sent successfully');
-        } catch (error) {
-            console.error('Error sending email:', error);
-        }
+                return this.transporter.sendMail(mailOptions);
+                console.log('Email sent successfully');
+            } catch (error) {
+                console.error('Error sending email:', error);
+            }
 
 
-   }
+    }
+
+    //reset password mail
+    async sendForgotPasswordMail(to: string, subject: string, templateName: string, context: any)
+    {
+
+            const html = this.compileTemplate(templateName, context);
+
+            const mailOptions = {
+                from: process.env.MAIL_FROM || 'no-reply@example.com',
+                to,
+                subject,
+                html,
+            };
+        
+            
+
+            try {
+
+                return this.transporter.sendMail(mailOptions);
+                console.log('Email sent successfully');
+            } catch (error) {
+                console.error('Error sending email:', error);
+            }
+
+
+    }
 }

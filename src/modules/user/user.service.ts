@@ -243,7 +243,7 @@
             user.email_verification_token_expires_at = new Date(Date.now() + 2 * 60 * 1000); // 2 minutes from now
 
             // Send the verification code to the user's email
-            await this.mailService.sendMail(
+            await this.mailService.sendEmailVerificationMail(
                 user.email,
                 'Email Verification Code',
                 'email-verification',
@@ -396,6 +396,175 @@
       }
       
 
+  }
+
+  //user forgot password 
+  //send user forgot password token
+  async forgotPassword(email: string): Promise < User >{
+
+    try {
+
+        const user = await this.userRepository.findOne({
+          
+            where: {
+                email: email
+            }
+        });
+
+        if(!user)
+        {
+            throw new HttpException(
+                {
+                  status: HttpStatus.BAD_REQUEST,
+                  message: 'User not found',
+                  error: 'Bad Request',
+                },
+                HttpStatus.BAD_REQUEST,
+              );
+        }
+
+        //generate 6 digit verification code
+        const verificationCode = Str.random(6);
+
+        //set the verification code and its expiration time
+        user.password_reset_token = verificationCode;
+        user.password_reset_token_expires_at = new Date(Date.now() + 2 * 60 * 1000); // 2 minutes from now
+
+        //send the verification code to the user's email
+        await this.mailService.sendForgotPasswordMail(
+            user.email,
+            'Password Reset Code',
+            'password-reset',
+            {
+                name: user.firstName,
+                verificationCode: verificationCode,
+            },
+        )
+        //save the user with the verification code
+        const updatedUser = await this.userRepository.save(user);
+
+        return updatedUser;
+      
+    } catch (error) {
+
+        // Log full error for internal debugging
+        console.error('Error sending password reset code:', {
+          message: error.message,
+          stack: error.stack,
+          name: error.name,
+        });
+      
+        // Re-throw known HttpExceptions
+        if (error instanceof HttpException) {
+          throw error;
+        }
+      
+        // Optionally, log to an external service like Sentry here
+      
+        // Return a generic message to avoid leaking internal details
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            message: 'Something went wrong while sending password reset code. Please try again later.',
+            error: 'Internal Server Error',
+          },
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      
+    }
+
+  }
+
+  //reset user password
+  async resetPassword(data: any): Promise <User > {
+
+    try {
+      
+        const user = await this.userRepository.findOne({
+            where: {
+                password_reset_token: data.token
+            }
+        });
+
+        if(!user)
+        {
+            throw new HttpException(
+                {
+                  status: HttpStatus.BAD_REQUEST,
+                  message: 'User not found',
+                  error: 'Bad Request',
+                },
+                HttpStatus.BAD_REQUEST,
+              );
+        }
+
+        // Check if the reset token is valid
+        if(!user.password_reset_token || user.password_reset_token !== data.token) {
+            
+            throw new HttpException(
+                {
+                  status: HttpStatus.BAD_REQUEST,
+                  message: 'Invalid reset token',
+                  error: 'Bad Request',
+                },
+                HttpStatus.BAD_REQUEST,
+              );
+        }
+
+        // Check if the reset token has expired
+        if(user.password_reset_token_expires_at && user.password_reset_token_expires_at < new Date()) {
+            throw new HttpException(
+                {
+                  status: HttpStatus.BAD_REQUEST,
+                  message: 'Reset token has expired',
+                  error: 'Bad Request',
+                },
+                HttpStatus.BAD_REQUEST,
+              );
+        }
+
+        // Hash the new password
+        const hashPassword = await bcrypt.hash(data.new_password, 10);
+
+        // Set the new password and clear the reset token
+        user.password = hashPassword;
+        user.password_reset_token = null;
+        user.password_reset_token_expires_at = null;
+
+        // Save the updated user
+        const updatedUser = await this.userRepository.save(user);
+
+        return updatedUser;
+
+
+
+    } catch (error) {
+
+        // Log full error for internal debugging
+        // console.error('Error resetting user password:', {
+        //   message: error.message,
+        //   stack: error.stack,
+        //   name: error.name,
+        // });
+      
+        // Re-throw known HttpExceptions
+        if (error instanceof HttpException) {
+          throw error;
+        }
+      
+        // Optionally, log to an external service like Sentry here
+      
+        // Return a generic message to avoid leaking internal details
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            message: 'Something went wrong while resetting your password. Please try again later.',
+            error: 'Internal Server Error',
+          },
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      
+    }
   }
 
 
