@@ -1,5 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from '../../../database/entities/base.entity';
+import { UserRole } from '../enum/user-role.enum';
+
 
 @Entity()
 export class User extends BaseEntity {
@@ -15,32 +17,70 @@ export class User extends BaseEntity {
     @Column({ unique: true })
     email: string;
 
-    @Column({ type: 'timestamp', nullable: true })
+    @Column
+        ( { 
+            type: 'enum',
+            enum: UserRole,
+            default: UserRole.USER
+        })
+    role: UserRole;
+
+    @Column
+        ({ 
+            type: 'timestamp', 
+            nullable: true 
+        })
     email_verified_at?: Date | null;
     
-    @Column({ type: 'varchar', nullable: true})
+    @Column
+        ({ 
+            type: 'varchar', 
+            nullable: true
+        })
     email_verification_token?: String | null;
 
-    @Column({ type: 'timestamp', nullable: true})
+    @Column
+        ({ 
+            type: 'timestamp', 
+            nullable: true
+        })
     email_verification_token_expires_at?: Date | null;
 
-    @Column({ type: 'varchar', nullable: true})
+    @Column
+        ({ 
+            type: 'varchar', 
+            nullable: true
+        })
     password_reset_token?: String | null;
 
-    @Column({ type: 'timestamp', nullable: true})
+    @Column
+        ({ 
+            type: 'timestamp', 
+            nullable: true
+        })
     password_reset_token_expires_at?: Date | null;
 
     
     @Column()
     password: string;
 
-    @Column({ type:'varchar',nullable: true })
+    @Column
+        ({ 
+            type:'varchar',
+            nullable: true 
+        })
     avatar?: string | null;
     
-    @Column({ default: false })
+    @Column
+        ({ 
+            default: false 
+        })
     isVerified?: boolean;
     
-    @Column({ default: false })
+    @Column
+        ({ 
+            default: false 
+        })
     isAdmin?: boolean;
 
 
