@@ -5,6 +5,7 @@ import { UserModule } from './modules/user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { FarmerShopModule } from './modules/farmer-shop/farmer-shop.module';
 import JwtConfig from './config/jwt.config'
 
 
@@ -33,6 +34,7 @@ import JwtConfig from './config/jwt.config'
 
     UserModule,
     CloudinaryModule,
+    FarmerShopModule,
 
   ],
   controllers: [AppController],

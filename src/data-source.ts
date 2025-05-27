@@ -1,5 +1,8 @@
 import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
+import { User } from './modules/user/entities/user.entity';
+import { FarmerShop } from './modules/farmer-shop/entities/farmer-shop.entity';
+
 dotenv.config();
 
 export const AppDataSource = new DataSource({
@@ -9,7 +12,7 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: ['src/**/*.entity.ts'],       // Use src/*.ts files
+  entities: [User, FarmerShop],       // Use src/*.ts files
   migrations: ['src/database/migrations/*.ts'],  // Use src migrations files
   synchronize: false,
 });

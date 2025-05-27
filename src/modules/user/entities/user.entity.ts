@@ -1,9 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from '../../../database/entities/base.entity';
 import { UserRole } from '../enum/user-role.enum';
+import { FarmerShop } from '../../farmer-shop/entities/farmer-shop.entity';
 
 
-@Entity()
+@Entity('users')  
 export class User extends BaseEntity {
     @Column()
     firstName: string;
@@ -82,6 +83,9 @@ export class User extends BaseEntity {
             default: false 
         })
     isAdmin?: boolean;
+
+    @OneToMany(() => FarmerShop, shop => shop.user)
+    farmerShops: FarmerShop[];
 
 
 
