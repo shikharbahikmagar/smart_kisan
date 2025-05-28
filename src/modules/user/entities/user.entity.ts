@@ -87,6 +87,4 @@ export class User extends BaseEntity {
     @OneToMany(() => FarmerShop, shop => shop.user)
     farmerShops: FarmerShop[];
 
-
-
 }

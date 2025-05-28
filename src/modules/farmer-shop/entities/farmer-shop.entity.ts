@@ -115,6 +115,8 @@ export class FarmerShop extends BaseEntity{
         }
     )
     user: User;
+
+    
     @Column()
     userId: number;
 
