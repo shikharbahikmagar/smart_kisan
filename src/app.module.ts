@@ -28,7 +28,7 @@ import JwtConfig from './config/jwt.config'
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         autoLoadEntities: true,
-        synchronize: true, // ❗️Disable this in production
+        synchronize: false, // ❗️Disable this in production
       }),
     }),
 
