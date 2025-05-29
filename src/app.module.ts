@@ -6,14 +6,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { FarmerShopModule } from './modules/farmer-shop/farmer-shop.module';
-import JwtConfig from './config/jwt.config'
+import appConfig from './config/app.config'
 
 
 @Module({
   imports:[
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [JwtConfig],
+      load: [appConfig],
       envFilePath: '.env',
     }),
 
