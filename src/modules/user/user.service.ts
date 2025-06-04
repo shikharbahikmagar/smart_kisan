@@ -164,6 +164,7 @@
                 lastName: true,
                 contactNumber: true,
                 email: true,
+                role: true,
                 avatar: true,
                 isVerified: true,
                 isAdmin: true
@@ -573,7 +574,8 @@
   generateAccessToken(user: User): string {
     const payload = {
         sub: user.id,
-        email: user.email
+        email: user.email,
+        role: user.role
     };
     return this.jwtService.sign(payload, {
         expiresIn: process.env.JWT_EXPIRES_IN || '7d'
@@ -583,7 +585,8 @@
   generateRefreshToken(user: User): string {
     const payload = {
         sub: user.id,
-        email: user.email
+        email: user.email,
+        role: user.role
     };
     return this.jwtService.sign(payload, {
         expiresIn: '7d'

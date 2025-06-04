@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from '../../../database/entities/base.entity';
-import { UserRole } from '../enum/user-role.enum';
+import { UserRole } from '../../../constants/enum/user-role.enum';
 import { FarmerShop } from '../../farmer-shop/entities/farmer-shop.entity';
 
 

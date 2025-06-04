@@ -7,6 +7,9 @@ import { User } from '../../common/decorators/user.decorator';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { FileInterceptor, FileFieldsInterceptor } from '@nestjs/platform-express';
 import { MulterExceptionFilter } from 'src/filters/multer-exception.filter';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { RolesGuard } from '../../common/guards/roles.guard';
+import { UserRole } from 'src/constants/enum/user-role.enum';
 
 
 @Controller('farmer-shop')
@@ -19,6 +22,8 @@ export class FarmerShopController {
   {}
 
 
+  @Roles(UserRole.FARMER)
+  @UseGuards(RolesGuard)
   @UseGuards(JwtAuthGuard)
   @UseFilters(MulterExceptionFilter) 
   @UseInterceptors(FileFieldsInterceptor([
@@ -39,6 +44,9 @@ export class FarmerShopController {
     },
   }))
 
+  @Roles(UserRole.FARMER)
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Post('create')
   async create(@Body() createFarmerShopDto: CreateFarmerShopDto, @User() user: any, @UploadedFiles() files: {
 
@@ -82,6 +90,9 @@ export class FarmerShopController {
     
   }
 
+  @Roles(UserRole.ADMIN)
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('verify/:id')
   async verifyShop(@Param('id') id: string){
 

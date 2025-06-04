@@ -101,6 +101,7 @@ export class UserController {
         lastName: userDetails.lastName,
         contactNumber: userDetails.contactNumber,
         email: userDetails.email,
+        role: userDetails.role,
         avatar: userDetails.avatar,
         isVerified: userDetails.isVerified,
         isAdmin: userDetails.isAdmin,

@@ -1,7 +1,7 @@
 import { Optional } from '@nestjs/common';
 import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString, IsEnum } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { UserRole } from '../enum/user-role.enum';
+import { UserRole } from '../../../constants/enum/user-role.enum';
 
 
 export class CreateUserDto {

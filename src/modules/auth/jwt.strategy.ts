@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { UserRole } from 'src/constants/enum/user-role.enum';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -17,8 +18,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   
-  async validate(payload: { sub: number; email: string }) {
+  async validate(payload: { sub: number; email: string, role: UserRole }) {
     // This method runs if the token is valid
-    return { userId: payload.sub, email: payload.email }; // this is attached to req.user
+    return { userId: payload.sub, email: payload.email, role: payload.role }; // this is attached to req.user
   }
 }
