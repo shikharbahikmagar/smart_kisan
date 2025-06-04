@@ -1,6 +1,7 @@
 import { Optional } from '@nestjs/common';
-import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString, IsEnum } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { UserRole } from '../enum/user-role.enum';
 
 
 export class CreateUserDto {
@@ -21,24 +22,30 @@ export class CreateUserDto {
     @IsEmail()
     email: string;
 
+    @IsOptional()
+    @IsEnum(UserRole, {
+        message: 'Role must be of FARMER, ADMIN, EXPERT or USER'
+
+    })
+    role: UserRole;
+
     @IsNotEmpty()
     @IsString()
     password: string;
 
     @IsOptional()
     @IsString()
-    avatar?: string;
+    avatar?: string | null;
 
     @IsBoolean()
-    @Transform(({value}) => value === 'false' || value === false)
+    @IsOptional()
     @Transform(({value}) => value === 'true' || value === true)
     isVerified?: boolean;
 
-    @IsNotEmpty()
     @IsBoolean()
-    @Transform(({value}) => value === 'false' || value === false)
+    @IsOptional()
     @Transform(({value}) => value === 'true' || value === true)
-    isAdmin: boolean;
+    isAdmin?: boolean;
 
     
 }

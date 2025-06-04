@@ -52,6 +52,7 @@ export class UserController {
         lastName: user.lastName,
         contactNumber: user.contactNumber,
         email: user.email,
+        role: user.role,
         avatar: user.avatar,
         isVerified: user.isVerified,
         isAdmin: user.isAdmin,

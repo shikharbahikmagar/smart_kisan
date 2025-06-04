@@ -42,6 +42,7 @@
     async create(data: CreateUserDto) {
         try {
 
+          
             // Check if the user already exists
             const existingUser = await this.userRepository.findOne({
                 where: {
@@ -72,6 +73,7 @@
                 lastName: data.lastName,
                 contactNumber: data.contactNumber,
                 email: data.email,
+                role: data.role || 'user',
                 password: hashPassword,
                 avatar: data.avatar,
                 isVerified: data.isVerified,
@@ -574,7 +576,7 @@
         email: user.email
     };
     return this.jwtService.sign(payload, {
-        expiresIn: '15m'
+        expiresIn: process.env.JWT_EXPIRES_IN || '7d'
     }); // Short-lived access token
   }
 
