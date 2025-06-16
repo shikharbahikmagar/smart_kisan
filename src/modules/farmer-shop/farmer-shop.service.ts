@@ -111,19 +111,62 @@ export class FarmerShopService {
 
   }
 
-  findAll() {
-    return `This action returns all farmerShop`;
+
+  // get Farmer shop details
+  async getFarmerShop(userId: number): Promise<FarmerShop>
+  {
+
+    const ShopDetails =  await this.farmerShopRepository.findOne({
+      where: {
+        userId: userId
+      }
+    })
+
+
+    if (!ShopDetails) {
+      throw new HttpException({
+        status: HttpStatus.NOT_FOUND,
+        message: 'Farmer shop not found',
+        error: 'Not Found',
+      }, HttpStatus.NOT_FOUND);
+    }
+
+    console.log(`Shop Details: ${JSON.stringify(ShopDetails)}`);
+    
+
+    return ShopDetails;
+
+
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} farmerShop`;
-  }
+  //update farmer shop details
+  async updateFarmerShopDetails(data: UpdateFarmerShopDto, userId: number, ): Promise<FarmerShop> {
 
-  update(id: number, updateFarmerShopDto: UpdateFarmerShopDto) {
-    return `This action updates a #${id} farmerShop`;
-  }
+    console.log(data);
+    
 
-  remove(id: number) {
-    return `This action removes a #${id} farmerShop`;
+    const farmerShop = await this.farmerShopRepository.findOne({
+      where: {
+        userId
+      }
+    });
+
+    if (!farmerShop) {
+      throw new HttpException({
+        status: HttpStatus.NOT_FOUND,
+        message: 'Farmer shop not found',
+        error: 'Not Found',
+      }, HttpStatus.NOT_FOUND);
+    }
+
+    // Update the fields with the provided data
+    Object.assign(farmerShop, data);
+
+    const updatedFarmerShop = await this.farmerShopRepository.save(farmerShop);
+
+    console.log(updatedFarmerShop);
+    
+
+    return updatedFarmerShop;
   }
 }

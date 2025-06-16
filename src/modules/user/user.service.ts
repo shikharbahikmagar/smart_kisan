@@ -124,7 +124,8 @@
           }
 
           const accessToken = this.generateAccessToken(user);
-          const refreshToken = this.generateRefreshToken(user); // Implement refresh token generation here
+          const refreshToken = this.generateRefreshToken(user);
+          
 
           return {
               user,
@@ -578,7 +579,7 @@
         role: user.role
     };
     return this.jwtService.sign(payload, {
-        expiresIn: process.env.JWT_EXPIRES_IN || '7d'
+        expiresIn: process.env.JWT_EXPIRES_IN || '1h'
     }); // Short-lived access token
   }
 

@@ -43,17 +43,13 @@ export class FarmerShopController {
       cb(null, true);
     },
   }))
-
-  @Roles(UserRole.FARMER)
-  @UseGuards(RolesGuard)
-  @UseGuards(JwtAuthGuard)
   @Post('create')
   async create(@Body() createFarmerShopDto: CreateFarmerShopDto, @User() user: any, @UploadedFiles() files: {
 
-    shopImage?: Express.Multer.File[],
-    citizenshipFrontImage?: Express.Multer.File[],
-    citizenshipBackImage?: Express.Multer.File[],
-  }) {
+      shopImage?: Express.Multer.File[],
+      citizenshipFrontImage?: Express.Multer.File[],
+      citizenshipBackImage?: Express.Multer.File[],
+    }) {
     
 
     const shopImageUrl = files.shopImage && files.shopImage.length > 0 ? await this.cloudinaryService.uploadFarmerShopImage(files.shopImage[0]) : '';
@@ -119,23 +115,109 @@ export class FarmerShopController {
 
   }
 
-  @Get()
-  findAll() {
-    return this.farmerShopService.findAll();
+  // get farmer shop details
+  @Roles(UserRole.FARMER)
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
+  @Get('details')
+  async getFarmerShop(@User() user: any) {
+
+    console.log(`User ID: ${user.userId}`);
+    
+
+    const farmerShop = await this.farmerShopService.getFarmerShop(user?.userId);
+    if (!farmerShop) {
+      return {
+        message: 'Farmer shop not found',
+      };
+    }
+    return {
+      message: 'Farmer shop details retrieved successfully',
+      farmerShop: {
+        id: farmerShop.id,
+        shopName: farmerShop.shopName,
+        shopAddress: farmerShop.shopAddress,
+        province: farmerShop.province,
+        city: farmerShop.city,
+        street: farmerShop.street,
+        shopEmail: farmerShop.shopEmail,
+        shopDescription: farmerShop.shopDescription,
+        shopImage: farmerShop.shopImage,
+        citizenshipFrontImage: farmerShop.citizenshipFrontImage,
+        citizenshipBackImage: farmerShop.citizenshipBackImage,
+        panNumber: farmerShop.panNumber,
+        contactNumber: farmerShop.contactNumber,
+      }
+    };
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.farmerShopService.findOne(+id);
+
+  // Update farmer shop details
+  @Roles(UserRole.FARMER)
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
+  @Post('update')
+  @UseInterceptors(FileFieldsInterceptor([
+  { name: 'shopImage', maxCount: 1 },
+  { name: 'citizenshipFrontImage', maxCount: 1 },
+  { name: 'citizenshipBackImage', maxCount: 1 },
+], {
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: (req, file, cb) => {
+    if (!file.mimetype.match(/^image\/(jpeg|png|jpg|webp)$/)) {
+      return cb(new Error('Only image files (jpg, jpeg, png, webp) are allowed!'), false);
+    }
+    cb(null, true);
+  }
+}))
+  async updateFarmerShopDetails(@Body() farmerShop: UpdateFarmerShopDto, @User() user: any, @UploadedFiles() files: {
+
+    shopImage?: Express.Multer.File[],
+    citizenshipFrontImage?: Express.Multer.File[],
+    citizenshipBackImage?: Express.Multer.File[],
+  }) {
+
+    console.log(farmerShop);
+    
+
+    const shopImageUrl = files.shopImage && files.shopImage.length > 0 ? await this.cloudinaryService.uploadFarmerShopImage(files.shopImage[0]) : '';
+
+    const citizenshipFrontImageUrl = files.citizenshipFrontImage && files.citizenshipFrontImage.length > 0 ? await this.cloudinaryService.uploadFarmerCitizenshipFrontImage(files.citizenshipFrontImage[0]) : '';
+
+    const citizenshipBackImageUrl = files.citizenshipBackImage && files.citizenshipBackImage.length > 0 ? await this.cloudinaryService.uploadFarmerCitizenshipBackImage(files.citizenshipBackImage[0]) : '';
+    
+    const updatedFarmerShop = await this.farmerShopService.updateFarmerShopDetails({...farmerShop,
+
+      shopImage: shopImageUrl,
+      citizenshipFrontImage: citizenshipFrontImageUrl,
+      citizenshipBackImage: citizenshipBackImageUrl,
+     }, user.userId);
+
+     
+    if (!updatedFarmerShop) {
+      return {
+        message: 'Farmer shop not found',
+      };
+    }
+
+    return {
+      message: 'Farmer shop details updated successfully',
+      farmerShop: {
+        id: updatedFarmerShop.id,
+        shopName: updatedFarmerShop.shopName,
+        shopAddress: updatedFarmerShop.shopAddress,
+        province: updatedFarmerShop.province,
+        city: updatedFarmerShop.city,
+        street: updatedFarmerShop.street,
+        shopEmail: updatedFarmerShop.shopEmail,
+        shopDescription: updatedFarmerShop.shopDescription,
+        shopImage: updatedFarmerShop.shopImage,
+        citizenshipFrontImage: updatedFarmerShop.citizenshipFrontImage,
+        citizenshipBackImage: updatedFarmerShop.citizenshipBackImage,
+        panNumber: updatedFarmerShop.panNumber,
+        contactNumber: updatedFarmerShop.contactNumber,
+      }
+    };
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFarmerShopDto: UpdateFarmerShopDto) {
-    return this.farmerShopService.update(+id, updateFarmerShopDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.farmerShopService.remove(+id);
-  }
 }

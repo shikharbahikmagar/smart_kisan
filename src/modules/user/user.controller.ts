@@ -67,7 +67,8 @@ export class UserController {
 
       const {user, accessToken, refreshToken} = await this.userService.login(data);
 
-  
+      console.log(user);
+
 
       return {
         message: 'User logged in successfully',
@@ -78,6 +79,7 @@ export class UserController {
           contactNumber: user.contactNumber,
           email: user.email,
           avatar: user.avatar,
+          role: user.role,
           isVerified: user.isVerified,
           isAdmin: user.isAdmin,
         },
@@ -92,6 +94,9 @@ export class UserController {
   async getProfile(@User() user: any) {
 
     const userDetails = await this.userService.getProfile(user.userId);
+
+    console.log(userDetails);
+    
 
     return {
       message: 'User profile retrieved successfully',
@@ -204,5 +209,7 @@ export class UserController {
     }
 
   }
+
+ 
 
 }

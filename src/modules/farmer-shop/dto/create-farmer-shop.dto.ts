@@ -1,9 +1,7 @@
 import { IsString, IsNotEmpty, IsEmail, IsOptional, isString } from 'class-validator';
 import { Transform } from 'class-transformer';
-
-
 export class CreateFarmerShopDto {
-
+    
     @IsNotEmpty()
     @IsString()
     @Transform(({ value }) => String(value))
