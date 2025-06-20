@@ -6,7 +6,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { FarmerShopModule } from './modules/farmer-shop/farmer-shop.module';
+import { ExpertModule } from './modules/expert/expert.module';
 import appConfig from './config/app.config'
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './common/guards/auth.guard';
 
 
 @Module({
@@ -35,9 +38,15 @@ import appConfig from './config/app.config'
     UserModule,
     CloudinaryModule,
     FarmerShopModule,
+    ExpertModule,
 
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, 
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    }
+  ],
 })
 export class AppModule {}

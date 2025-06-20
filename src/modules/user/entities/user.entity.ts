@@ -1,7 +1,8 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from '../../../database/entities/base.entity';
 import { UserRole } from '../../../constants/enum/user-role.enum';
 import { FarmerShop } from '../../farmer-shop/entities/farmer-shop.entity';
+import { Expert } from '../../expert/entities/expert.entity';
 
 
 @Entity('users')  
@@ -86,5 +87,8 @@ export class User extends BaseEntity {
 
     @OneToMany(() => FarmerShop, shop => shop.user)
     farmerShops: FarmerShop[];
+
+    @OneToOne(() => Expert, expert => expert.user)
+    expertProfile: Expert;
 
 }

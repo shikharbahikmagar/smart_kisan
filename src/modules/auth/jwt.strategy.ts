@@ -1,25 +1,30 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
+import {verify} from 'jsonwebtoken';
 import { UserRole } from 'src/constants/enum/user-role.enum';
 
-@Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
-    const jwtSecret = process.env.JWT_SECRET_KEY;
-    if (!jwtSecret) {
-      throw new UnauthorizedException('JWT secret is not defined in environment variables');
-    }
+export type authPayload = {
+  userId: number;
+  email: string;
+  role: UserRole;
+}
 
-    super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: jwtSecret,
-    });
-  }
 
+
+ export const decodeToken = (token: string): { isValid: true, data: authPayload} | {isValid: false, data: null} => {
   
-  async validate(payload: { sub: number; email: string, role: UserRole }) {
-    // This method runs if the token is valid
-    return { userId: payload.sub, email: payload.email, role: payload.role }; // this is attached to req.user
+  try {
+    
+    // console.log("Decoding token:", token);
+    
+  const decodedToken = verify(token, process.env.JWT_SECRET_KEY!) as authPayload;
+
+    return { isValid: true, data: decodedToken };
+
+  } catch (error) {
+
+    console.log(error);
+    return { isValid: false, data: null };
+    
+
   }
+
 }

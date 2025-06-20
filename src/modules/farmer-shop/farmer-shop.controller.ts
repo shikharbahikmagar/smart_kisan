@@ -2,10 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterc
 import { FarmerShopService } from './farmer-shop.service';
 import { CreateFarmerShopDto } from './dto/create-farmer-shop.dto';
 import { UpdateFarmerShopDto } from './dto/update-farmer-shop.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { User } from '../../common/decorators/user.decorator';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { FileInterceptor, FileFieldsInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { MulterExceptionFilter } from 'src/filters/multer-exception.filter';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -21,10 +20,8 @@ export class FarmerShopController {
   
   {}
 
-
   @Roles(UserRole.FARMER)
   @UseGuards(RolesGuard)
-  @UseGuards(JwtAuthGuard)
   @UseFilters(MulterExceptionFilter) 
   @UseInterceptors(FileFieldsInterceptor([
     {name: 'shopImage', maxCount: 1},
@@ -67,7 +64,7 @@ export class FarmerShopController {
 
     return {
       message: 'Farmer shop created successfully',
-      farmerShop: {
+      data: {
         id: farmerShop.id,
         shopName: farmerShop.shopName,
         shopAddress: farmerShop.shopAddress,
@@ -88,7 +85,6 @@ export class FarmerShopController {
 
   @Roles(UserRole.ADMIN)
   @UseGuards(RolesGuard)
-  @UseGuards(JwtAuthGuard)
   @Get('verify/:id')
   async verifyShop(@Param('id') id: string){
 
@@ -118,11 +114,10 @@ export class FarmerShopController {
   // get farmer shop details
   @Roles(UserRole.FARMER)
   @UseGuards(RolesGuard)
-  @UseGuards(JwtAuthGuard)
   @Get('details')
   async getFarmerShop(@User() user: any) {
 
-    console.log(`User ID: ${user.userId}`);
+    // console.log(`User ID: ${user.userId}`);
     
 
     const farmerShop = await this.farmerShopService.getFarmerShop(user?.userId);
@@ -155,7 +150,6 @@ export class FarmerShopController {
   // Update farmer shop details
   @Roles(UserRole.FARMER)
   @UseGuards(RolesGuard)
-  @UseGuards(JwtAuthGuard)
   @Post('update')
   @UseInterceptors(FileFieldsInterceptor([
   { name: 'shopImage', maxCount: 1 },

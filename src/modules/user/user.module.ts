@@ -6,7 +6,6 @@ import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
-import { JwtStrategy } from 'src/modules/auth/jwt.strategy';
 import { MailService } from 'src/mail/mail.service';
 
 @Module({
@@ -26,7 +25,7 @@ import { MailService } from 'src/mail/mail.service';
     }),
   ],
   controllers: [UserController],
-  providers: [UserService, JwtStrategy, MailService],
+  providers: [UserService, MailService],
   exports: [UserService],
 })
 export class UserModule {}

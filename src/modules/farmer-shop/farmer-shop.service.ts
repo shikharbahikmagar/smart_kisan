@@ -27,9 +27,10 @@ export class FarmerShopService {
 
       if (data.shopEmail) {
         const existingFarmerShop = await this.farmerShopRepository.findOne({
-          where: {
-            shopEmail: data.shopEmail
-          }
+          where: [
+            { shopEmail: data.shopEmail },
+            { user: { id: userId } }
+          ]
         })
 
         if (existingFarmerShop) {
@@ -131,7 +132,7 @@ export class FarmerShopService {
       }, HttpStatus.NOT_FOUND);
     }
 
-    console.log(`Shop Details: ${JSON.stringify(ShopDetails)}`);
+    // console.log(`Shop Details: ${JSON.stringify(ShopDetails)}`);
     
 
     return ShopDetails;
@@ -142,12 +143,13 @@ export class FarmerShopService {
   //update farmer shop details
   async updateFarmerShopDetails(data: UpdateFarmerShopDto, userId: number, ): Promise<FarmerShop> {
 
-    console.log(data);
+    // console.log(data);
     
 
     const farmerShop = await this.farmerShopRepository.findOne({
       where: {
         userId
+
       }
     });
 
@@ -159,12 +161,15 @@ export class FarmerShopService {
       }, HttpStatus.NOT_FOUND);
     }
 
+    console.log(data);
+    
+
     // Update the fields with the provided data
     Object.assign(farmerShop, data);
 
     const updatedFarmerShop = await this.farmerShopRepository.save(farmerShop);
 
-    console.log(updatedFarmerShop);
+    // console.log(updatedFarmerShop);
     
 
     return updatedFarmerShop;

@@ -5,7 +5,6 @@ import { FarmerShop } from './entities/farmer-shop.entity';
 import { FarmerShopService } from './farmer-shop.service';
 import { FarmerShopController } from './farmer-shop.controller';
 import { User } from '../user/entities/user.entity';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 
 

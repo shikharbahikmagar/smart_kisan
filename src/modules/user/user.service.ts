@@ -22,19 +22,17 @@
     Repository
     } from 'typeorm';
     import * as bcrypt from 'bcrypt';
-    import {
-    JwtService
-    } from '@nestjs/jwt';
-
+    import {sign} from 'jsonwebtoken';
     import { EmailVerifyDto } from './dto/email-verify.dto';
     import {Str} from '../../common/helpers/str.helper'
     import { MailService } from 'src/mail/mail.service';
+import { authPayload } from '../auth/jwt.strategy';
 
     @Injectable()
     export class UserService {
     constructor(
-        @InjectRepository(User) private userRepository: Repository < User > ,
-        private jwtService: JwtService,
+        @InjectRepository(User) 
+        private userRepository: Repository < User > ,
         private readonly mailService: MailService,
     ) {}
 
@@ -206,6 +204,7 @@
   async sendEmailVerificationCode(userId: number): Promise < User > {
 
     try {
+          // console.log('from service',userId)
 
             const user = await this.userRepository.findOne({
                 where: {
@@ -573,23 +572,27 @@
 
 
   generateAccessToken(user: User): string {
-    const payload = {
-        sub: user.id,
+    const payload: authPayload = {
+        userId: user.id,
         email: user.email,
         role: user.role
     };
-    return this.jwtService.sign(payload, {
+
+    // console.log("log payload", payload);
+    // Generate a short-lived access token
+    
+    return sign(payload, process.env.JWT_SECRET_KEY!,  {
         expiresIn: process.env.JWT_EXPIRES_IN || '1h'
-    }); // Short-lived access token
+    }); // Short-lived access token`
   }
 
   generateRefreshToken(user: User): string {
-    const payload = {
-        sub: user.id,
+    const payload: authPayload = {
+        userId: user.id,
         email: user.email,
         role: user.role
     };
-    return this.jwtService.sign(payload, {
+    return sign(payload, process.env.JWT_SECRET_KEY!, {
         expiresIn: '7d'
     }); // Long-lived refresh token
   }

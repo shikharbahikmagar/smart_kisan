@@ -20,8 +20,12 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { EmailVerifyDto } from './dto/email-verify.dto';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
 import { User} from '../../common/decorators/user.decorator';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { UserRole } from 'src/constants/enum/user-role.enum';
+import { IsPublic } from 'src/common/decorators/public.decorator';
+import { authPayload } from '../auth/jwt.strategy';
 
 //controller for user module
 @Controller('user')
@@ -34,6 +38,7 @@ export class UserController {
   ) {}
 
   //user register
+  @IsPublic()
   @Post('signup')
   @UseInterceptors(FileInterceptor('avatar'))
   async create(@Body() createUserDto: CreateUserDto, @UploadedFile() file: Express.Multer.File) {
@@ -60,19 +65,49 @@ export class UserController {
     }
   }
 
+  //register experts only by admin
+  @Roles(UserRole.ADMIN)
+  @UseGuards(RolesGuard)
+  @Post('register-expert')
+  @UseInterceptors(FileInterceptor('avatar'))
+  async registerExpert(@Body() createUserDto: CreateUserDto, @UploadedFile() file: Express.Multer.File) {
+
+    const avatartUrl  =  file ? await this.cloudinaryService.uploadUserAvatar(file) : '';
+
+    const user = await this.userService.create({...createUserDto, avatar: avatartUrl});
+
+    return {
+      message: 'Expert created successfully',
+      data: {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        contactNumber: user.contactNumber,
+        email: user.email,
+        role: user.role,
+        avatar: user.avatar,
+        isVerified: user.isVerified,
+        isAdmin: user.isAdmin,
+      }
+    }
+  }
+
+
+
   //user login 
+  @IsPublic()
   @Post('login')
   async login(@Body() data: LoginUserDto)
   {
 
       const {user, accessToken, refreshToken} = await this.userService.login(data);
 
-      console.log(user);
+      // console.log(user);
 
 
       return {
         message: 'User logged in successfully',
-        user: {
+        data: {
           id: user.id,
           firstName: user.firstName,
           lastName: user.lastName,
@@ -89,18 +124,17 @@ export class UserController {
   }
 
   //user profile get
-  @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getProfile(@User() user: any) {
 
     const userDetails = await this.userService.getProfile(user.userId);
 
-    console.log(userDetails);
+    // console.log(userDetails);
     
 
     return {
       message: 'User profile retrieved successfully',
-      user: {
+      data: {
         id: userDetails.id,         
         firstName: userDetails.firstName,
         lastName: userDetails.lastName,
@@ -118,15 +152,17 @@ export class UserController {
   }
 
   //send email verification code
-  @UseGuards(JwtAuthGuard)
+
   @Get('send-email-verification') 
-  async sendEmailVerification(@User() user:any){
+  async sendEmailVerification(@User() user: authPayload){
+
+    // console.log('afjlsdflka', user);
 
     const userDetails = await this.userService.sendEmailVerificationCode(user.userId);
 
     return {
       message: 'Email verification code sent successfully',
-      user: {
+      data: {
         id: userDetails.id,
         firstName: userDetails.firstName,
         lastName: userDetails.lastName,
@@ -144,7 +180,6 @@ export class UserController {
   }
 
   //verify email
-  @UseGuards(JwtAuthGuard)
   @Post('verify-email')
   async verifyEmail(@Body() token: string, @User() user:any){
 
@@ -170,6 +205,7 @@ export class UserController {
   }
 
   //user forgot password
+  @IsPublic()
   @Post('forgot-password')
   async forgotPassword(@Body() data: {email: string}) {
 
@@ -184,6 +220,7 @@ export class UserController {
   }
 
   //reset user password
+  @IsPublic()
   @Post('reset-password')
   async resetPassword(@Body() data: {token: string, new_password: string, confirm_password: string}){
 
@@ -196,7 +233,7 @@ export class UserController {
 
     return {
       message: 'Password reset successfully',
-      user: {
+      data: {
         id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
