@@ -1,51 +1,52 @@
-import { Optional } from '@nestjs/common';
-import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString, IsEnum } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsEnum,
+} from 'class-validator';
 import { Transform } from 'class-transformer';
 import { UserRole } from '../../../constants/enum/user-role.enum';
 
-
 export class CreateUserDto {
+  @IsNotEmpty()
+  @IsString()
+  firstName: string;
 
-    @IsNotEmpty()
-    @IsString()
-    firstName: string;
+  @IsNotEmpty()
+  @IsString()
+  lastName: string;
 
-    @IsNotEmpty()
-    @IsString()
-    lastName: string;
+  @IsNotEmpty()
+  @IsString()
+  contactNumber: string;
 
-    @IsNotEmpty()
-    @IsString()
-    contactNumber: string;
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
 
-    @IsNotEmpty()
-    @IsEmail()
-    email: string;
+  @IsOptional()
+  @IsEnum(UserRole, {
+    message: 'Role must be of FARMER, ADMIN, EXPERT or USER',
+  })
+  role: UserRole;
 
-    @IsOptional()
-    @IsEnum(UserRole, {
-        message: 'Role must be of FARMER, ADMIN, EXPERT or USER'
+  @IsNotEmpty()
+  @IsString()
+  password: string;
 
-    })
-    role: UserRole;
+  @IsOptional()
+  @IsString()
+  avatar?: string | null;
 
-    @IsNotEmpty()
-    @IsString()
-    password: string;
+  @IsBoolean()
+  @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
+  isVerified?: boolean;
 
-    @IsOptional()
-    @IsString()
-    avatar?: string | null;
-
-    @IsBoolean()
-    @IsOptional()
-    @Transform(({value}) => value === 'true' || value === true)
-    isVerified?: boolean;
-
-    @IsBoolean()
-    @IsOptional()
-    @Transform(({value}) => value === 'true' || value === true)
-    isAdmin?: boolean;
-
-    
+  @IsBoolean()
+  @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
+  isAdmin?: boolean;
 }

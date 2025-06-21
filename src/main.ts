@@ -1,16 +1,16 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import {config} from 'dotenv';
+import { config } from 'dotenv';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Enable ValidationPipe globally
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,             // Strip properties that don't have decorators
-      forbidNonWhitelisted: true,  // Throw an error if non-decorated fields are present
-      transform: true,             // Automatically transform payloads to DTO instances
+      whitelist: true, // Strip properties that don't have decorators
+      forbidNonWhitelisted: true, // Throw an error if non-decorated fields are present
+      transform: true, // Automatically transform payloads to DTO instances
     }),
   );
 

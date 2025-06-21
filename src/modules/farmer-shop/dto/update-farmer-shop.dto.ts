@@ -2,7 +2,6 @@ import { IsOptional, IsString, IsEmail } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class UpdateFarmerShopDto {
-    
   @IsOptional()
   @IsString()
   @Transform(({ value }) => String(value))

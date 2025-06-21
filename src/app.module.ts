@@ -7,13 +7,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { FarmerShopModule } from './modules/farmer-shop/farmer-shop.module';
 import { ExpertModule } from './modules/expert/expert.module';
-import appConfig from './config/app.config'
+import appConfig from './config/app.config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './common/guards/auth.guard';
-
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
-  imports:[
+  imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       load: [appConfig],
@@ -39,14 +39,15 @@ import { AuthGuard } from './common/guards/auth.guard';
     CloudinaryModule,
     FarmerShopModule,
     ExpertModule,
-
+    CategoryModule,
   ],
   controllers: [AppController],
-  providers: [AppService, 
+  providers: [
+    AppService,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
-    }
+    },
   ],
 })
 export class AppModule {}

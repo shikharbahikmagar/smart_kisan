@@ -1,67 +1,54 @@
 import { Injectable } from '@nestjs/common';
-import { CreateExpertDto } from './dto/create-expert.dto';
 import { UpdateExpertDto } from './dto/update-expert.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Expert } from './entities/expert.entity';
-import { log } from 'console';
 
 @Injectable()
 export class ExpertService {
-
   constructor(
-    
     @InjectRepository(Expert)
     private readonly expertRepository: Repository<Expert>,
-
-  ){}
+  ) {}
 
   //update profile of expert
-  async updateProfile(data: UpdateExpertDto, userId: number){
-
-     const expert =  await this.expertRepository.findOne({
-      
+  async updateProfile(data: UpdateExpertDto, userId: number) {
+    const expert = await this.expertRepository.findOne({
       where: {
-        userId: userId
+        userId: userId,
       },
-      relations: ['user']
-
-    })
+      relations: ['user'],
+    });
 
     // console.log("adfkaskdfsdlfl", userId);
-    
 
     if (!expert) {
-      
       const newExpert = this.expertRepository.create({
         userId: userId,
         bio: data.bio || '',
         expertise: data.expertise || '',
         qualification: data.qualification || '',
         experience_years: data?.experience_years || 0,
-        availability: data.availability || false
-      })
+        availability: data.availability || false,
+      });
 
-    
-  const createdExpert = await this.expertRepository.save(newExpert);
+      const createdExpert = await this.expertRepository.save(newExpert);
 
       if (!createdExpert) {
         throw new Error('Failed to create expert profile');
       }
 
       // console.log(createdExpert);
-      
 
       return createdExpert;
-
-
     }
 
     // Update the expert profile with the provided data
     expert.bio = data.bio || expert.bio;
     expert.expertise = data.expertise || expert.expertise;
     expert.qualification = data.qualification || expert.qualification;
-    expert.experience_years = data?.experience_years || expert?.experience_years;
+    expert.experience_years =
+      data?.experience_years || expert?.experience_years;
     expert.availability = data.availability || expert.availability;
 
     // Save the updated expert profile
@@ -72,15 +59,11 @@ export class ExpertService {
     }
 
     // console.log("fetch from service:", updatedExpert);
-    
 
-     return updatedExpert;
-
+    return updatedExpert;
   }
 
-  async create(createExpertDto: CreateExpertDto) {
-
-
+  async create() {
     return 'This action adds a new expert';
   }
 
@@ -92,13 +75,11 @@ export class ExpertService {
     return `This action returns a #${id} expert`;
   }
 
-  update(id: number, updateExpertDto: UpdateExpertDto) {
+  update(id: number) {
     return `This action updates a #${id} expert`;
   }
 
   remove(id: number) {
     return `This action removes a #${id} expert`;
   }
-
-
 }

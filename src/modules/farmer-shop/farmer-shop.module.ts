@@ -7,7 +7,6 @@ import { FarmerShopController } from './farmer-shop.controller';
 import { User } from '../user/entities/user.entity';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 
-
 @Module({
   imports: [TypeOrmModule.forFeature([FarmerShop, User]), CloudinaryModule],
   controllers: [FarmerShopController],

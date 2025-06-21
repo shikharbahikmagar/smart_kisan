@@ -6,12 +6,8 @@ import { Expert } from './entities/expert.entity';
 import { User } from '../user/entities/user.entity';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 
-
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Expert, User]),
-    CloudinaryModule
-  ],
+  imports: [TypeOrmModule.forFeature([Expert, User]), CloudinaryModule],
   controllers: [ExpertController],
   providers: [ExpertService],
   exports: [ExpertService],

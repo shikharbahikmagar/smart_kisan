@@ -1,12 +1,9 @@
-import { authPayload } from "src/modules/auth/jwt.strategy";
-
+import { authPayload } from 'src/modules/auth/jwt.strategy';
 
 declare global {
-    namespace Express {
-        interface Request {
-            user?: authPayload
-        }
+  namespace Express {
+    interface Request {
+      user?: authPayload;
     }
+  }
 }
-
-
