@@ -11,6 +11,7 @@ import appConfig from './config/app.config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './common/guards/auth.guard';
 import { CategoryModule } from './modules/category/category.module';
+import { ProductModule } from './modules/product/product.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { CategoryModule } from './modules/category/category.module';
     FarmerShopModule,
     ExpertModule,
     CategoryModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [

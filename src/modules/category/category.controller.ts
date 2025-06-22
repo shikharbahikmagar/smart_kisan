@@ -18,6 +18,7 @@ import { UseGuards } from '@nestjs/common';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { IsPublic } from 'src/common/decorators/public.decorator';
 
 @Controller('category')
 export class CategoryController {
@@ -58,9 +59,15 @@ export class CategoryController {
     };
   }
 
+  @IsPublic()
   @Get()
-  findAll() {
-    return this.categoryService.findAll();
+  async getAllCategories() {
+    const categories = await this.categoryService.getAllCategories();
+
+    return {
+      message: 'Categories retrieved successfully',
+      data: categories,
+    };
   }
 
   @Get(':id')
@@ -77,7 +84,16 @@ export class CategoryController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoryService.remove(+id);
+  async remove(@Param('id') id: string) {
+    
+    if (isNaN(+id)) {
+      throw new Error('Invalid category ID');
+    }
+
+    await this.categoryService.remove(+id);
+
+    return {
+      message: 'Category removed successfully',
+    };
   }
 }

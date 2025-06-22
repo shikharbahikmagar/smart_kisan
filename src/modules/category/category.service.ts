@@ -22,8 +22,23 @@ export class CategoryService {
     return category;
   }
 
-  findAll() {
-    return `This action returns all category`;
+  async getAllCategories() {
+    
+    // Get all categories from the database
+    const categories = await this.categoryRepository.find({
+      order: {
+        createdAt: 'DESC',
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        icon: true,
+      },
+    });
+
+    return categories;
+
   }
 
   findOne(id: number) {
@@ -34,7 +49,18 @@ export class CategoryService {
     return `This action updates a #${id} category`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async remove(id: number) {
+    
+    const category = await this.categoryRepository.findOne({ where: { id } });
+    if (!category) {
+      throw new Error(`Category with id ${id} not found`);
+    }
+    
+    await this.categoryRepository.remove(category);
+    
+    return {
+      message: `Category deleted successfully`,
+    };
+
   }
 }

@@ -20,7 +20,7 @@ export const decodeToken = (
 
     return { isValid: true, data: decodedToken };
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return { isValid: false, data: null };
   }
 };

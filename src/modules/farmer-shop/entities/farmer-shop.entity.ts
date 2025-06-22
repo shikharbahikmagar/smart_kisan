@@ -1,6 +1,7 @@
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseEntity } from '../../../database/entities/base.entity';
 import { User } from '../../user/entities/user.entity';
+import { Product } from '../../product/entities/product.entity';
 
 @Entity('farmer_shops')
 export class FarmerShop extends BaseEntity {
@@ -83,4 +84,8 @@ export class FarmerShop extends BaseEntity {
 
   @Column()
   userId: number;
+
+  @ManyToOne(() => Product, (product) => product.farmerShop)
+  products: Product[];
+  
 }
