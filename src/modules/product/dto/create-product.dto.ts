@@ -7,6 +7,7 @@ import {
   IsDateString,
   Min,
   Max,
+  IsDecimal,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -28,9 +29,9 @@ export class CreateProductDto {
   @IsOptional()
   image?: string;
 
-  @IsString()
+  @IsDecimal()
   @IsNotEmpty()
-  stock: string;
+  stock: number;
 
   @Type(() => Number)
   @IsNumber()

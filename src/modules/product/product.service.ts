@@ -4,6 +4,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { FarmerShop } from '../farmer-shop/entities/farmer-shop.entity';
 
 @Injectable()
 export class ProductService {
@@ -11,11 +12,27 @@ export class ProductService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    @InjectRepository(FarmerShop)
+    private readonly farmerShopRepository: Repository<FarmerShop>,
   ) {}
 
-  async postProduct(data: CreateProductDto): Promise<Product> {
+  async postProduct(data: CreateProductDto, userId: number): Promise<Product> {
 
-    const newProduct = this.productRepository.create(data);
+
+    const farmerShopId = await this.farmerShopRepository.findOne(
+      {
+        where: { userId: userId },
+        select: ['id'],
+      }
+    )
+
+    if (!farmerShopId) {
+      throw new NotFoundException(`Farmer shop not found for user with id ${userId}`);
+    }
+
+    const newProduct = this.productRepository.create({
+      ...data,
+      farmerShopId: farmerShopId.id});
 
     const product = await this.productRepository.save(newProduct);
 
@@ -95,7 +112,7 @@ export class ProductService {
     });
 
     if (!product) {
-      throw new Error(`Product with id ${id} not found`);
+      throw new NotFoundException(`Product not found`);
     }
 
     return product;

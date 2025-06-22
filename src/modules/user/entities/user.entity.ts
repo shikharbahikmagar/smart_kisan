@@ -3,6 +3,7 @@ import { BaseEntity } from '../../../database/entities/base.entity';
 import { UserRole } from '../../../constants/enum/user-role.enum';
 import { FarmerShop } from '../../farmer-shop/entities/farmer-shop.entity';
 import { Expert } from '../../expert/entities/expert.entity';
+import { Cart } from '../../carts/entities/cart.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -79,4 +80,7 @@ export class User extends BaseEntity {
 
   @OneToOne(() => Expert, (expert) => expert.user)
   expertProfile: Expert;
+
+  @OneToMany(() => Cart, (cart) => cart.user)
+  carts: Cart[];
 }

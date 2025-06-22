@@ -12,6 +12,8 @@ import { UseInterceptors } from '@nestjs/common';
 import { UploadedFile } from '@nestjs/common';
 import { Product } from './entities/product.entity';
 import { IsPublic } from 'src/common/decorators/public.decorator';
+import { User } from 'src/common/decorators/user.decorator';
+import { authPayload } from '../auth/jwt.strategy';
 
 @Controller('product')
 export class ProductController {
@@ -24,14 +26,14 @@ export class ProductController {
   @Roles(UserRole.FARMER)
   @UseInterceptors(FileInterceptor('image'))
   @Post('create')
-  async postProduct(@Body() data: CreateProductDto, @UploadedFile() file: Express.Multer.File){
+  async postProduct(@Body() data: CreateProductDto, @UploadedFile() file: Express.Multer.File, @User() user: authPayload) {
 
     const productImage = file ? await this.cloudinaryService.uploadProductImage(file) : '';
 
-    console.log('Product Image:', productImage);
+    // console.log('Product Image:', productImage);
     
 
-    const product =  await this.productService.postProduct({...data, image: productImage });
+    const product =  await this.productService.postProduct({...data, image: productImage }, user.userId);
 
     return {
       message: 'Product created successfully',
@@ -49,13 +51,23 @@ export class ProductController {
 
   @IsPublic()
   @Get()
-  getAllProducts() {
+  async getAllProducts() {
 
-    const products = this.productService.getAllProducts();
+    const products = await this.productService.getAllProducts();
 
     return {
       message: 'Products retrieved successfully',
-      data: products,
+      data: {
+        products: products.map((product: Product) => ({
+          id: product.id,
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          image: product.image,
+          categoryId: product.categoryId,
+          farmerShopId: product.farmerShopId,
+        })),
+      },
     }
   }
 
@@ -67,7 +79,15 @@ export class ProductController {
     
     return {
       message: 'Product details retrieved successfully',
-      data: product,
+      data: {
+        id: product.id,
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        image: product.image,
+        categoryName: product.category.name,
+        farmerShopName: product.farmerShop.shopName,
+      },
     };
   }
 

@@ -12,6 +12,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './common/guards/auth.guard';
 import { CategoryModule } from './modules/category/category.module';
 import { ProductModule } from './modules/product/product.module';
+import { CartsModule } from './modules/carts/carts.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { ProductModule } from './modules/product/product.module';
     ExpertModule,
     CategoryModule,
     ProductModule,
+    CartsModule,
   ],
   controllers: [AppController],
   providers: [

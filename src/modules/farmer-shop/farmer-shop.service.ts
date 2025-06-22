@@ -27,7 +27,7 @@ export class FarmerShopService {
           throw new HttpException(
             {
               status: HttpStatus.BAD_REQUEST,
-              message: 'Farmer shop email already exist!',
+              message: 'Farmer shop already exist!',
               error: 'Bad Request',
             },
             HttpStatus.BAD_REQUEST,

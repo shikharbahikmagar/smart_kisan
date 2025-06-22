@@ -3,6 +3,7 @@ import { BaseEntity } from '../../../database/entities/base.entity';
 import { Column } from 'typeorm';
 import { Category } from '../../category/entities/category.entity';
 import { FarmerShop } from '../../farmer-shop/entities/farmer-shop.entity';
+import { Cart } from '../../carts/entities/cart.entity';
 
 
 @Entity('products')
@@ -47,11 +48,13 @@ export class Product  extends BaseEntity{
 
     @Column(
         {
-            type: 'varchar',
+            type: 'decimal',
+            precision: 10,
+            scale: 2,
             nullable: false
         }
     )
-    stock: string;
+    stock: number;
 
     @Column({
         type: 'int',
@@ -103,5 +106,8 @@ export class Product  extends BaseEntity{
     })
     farmerShop: FarmerShop;
 
+
+    @OneToMany(() => Cart, (cart) => cart.product)
+    carts: Cart[];
 
 }
