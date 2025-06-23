@@ -4,12 +4,15 @@ import { UpdateFarmerShopDto } from './dto/update-farmer-shop.dto';
 import { FarmerShop } from './entities/farmer-shop.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Product } from '../product/entities/product.entity';
 
 @Injectable()
 export class FarmerShopService {
   constructor(
     @InjectRepository(FarmerShop)
     private farmerShopRepository: Repository<FarmerShop>,
+    @InjectRepository(Product)
+    private productRepository: Repository<Product>,
   ) {}
 
   async create(data: CreateFarmerShopDto, userId: number): Promise<FarmerShop> {
@@ -152,5 +155,50 @@ export class FarmerShopService {
     // console.log(updatedFarmerShop);
 
     return updatedFarmerShop;
+  }
+
+
+  async getFarmerShopProducts(userId: number): Promise<Product[]> {
+    const farmerShop = await this.farmerShopRepository.findOne({
+      where: {
+        userId: userId,
+      },
+      select: {
+        id: true,
+        shopName: true,
+      }
+      
+    });
+
+    if (!farmerShop) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          message: 'Farmer shop not found',
+          error: 'Not Found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const products = await this.productRepository.find({
+      where: {
+        farmerShop: {
+          id: farmerShop.id,
+        },
+      },
+      relations: ['category'],
+
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        image: true,
+        stock: true,
+      },
+    });
+
+    return products;
   }
 }

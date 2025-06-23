@@ -102,4 +102,27 @@ export class CloudinaryService {
   async uploadCategoryIcon(file: Express.Multer.File): Promise<string> {
     return this.uploadMedia(file, 'categories/images');
   }
+
+
+  //upload news image to 'news/images' folder
+  async uploadNewsImage(file: Express.Multer.File): Promise<string> {
+    return this.uploadMedia(file, 'news/images');
+  }   
+
+  //upload news category image to 'news-category/images' folder
+  async uploadNewsCategoryImage(file: Express.Multer.File): Promise<string> {
+    return this.uploadMedia(file, 'news-category/images');
+  }
+
+  //upload knowledge article image to 'knowledge-articles/images' folder
+  async uploadKnowledgeArticleImage(
+    file: Express.Multer.File,
+  ): Promise<string> {
+    return this.uploadMedia(file, 'knowledge-articles/images');
+  }
+
+  //upload notice image to 'notices/images' folder
+  async uploadNoticeImage(file: Express.Multer.File): Promise<string> {
+    return this.uploadMedia(file, 'notices/images');
+  }
 }

@@ -6,6 +6,11 @@ import { Expert } from './modules/expert/entities/expert.entity';
 import { Category } from './modules/category/entities/category.entity';
 import { Product } from './modules/product/entities/product.entity';
 import { Cart } from './modules/carts/entities/cart.entity';
+import { News } from './modules/news/entities/news.entity';
+import { NewsCategory } from './modules/news_category/entities/news_category.entity';
+import { KnowledgeArticle } from './modules/knowledge_articles/entities/knowledge_article.entity';
+import { Notice } from './modules/notice/entities/notice.entity';
+
 
 dotenv.config();
 
@@ -16,7 +21,7 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: [User, FarmerShop, Expert, Category, Product, Cart], // Use src/*.ts files
+  entities: [User, FarmerShop, Expert, Category, Product, Cart, News, NewsCategory, KnowledgeArticle, Notice], // Use src/*.ts files
   migrations: ['src/database/migrations/*.ts'], // Use src migrations files
   synchronize: false,
 });

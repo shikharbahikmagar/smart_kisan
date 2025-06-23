@@ -268,4 +268,28 @@ export class FarmerShopController {
       },
     };
   }
+
+  @Roles(UserRole.FARMER)
+  @UseGuards(RolesGuard)
+  @Get('products')
+  async getFarmerShopProducts(@User() user: authPayload) {
+    const products =
+      await this.farmerShopService.getFarmerShopProducts(user.userId);
+
+    return {
+      message: 'Farmer shop products retrieved successfully',
+      data: products.map((product) => ({
+        id: product.id,
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        image: product.image,
+        stock: product.stock,
+        categoryId: product.categoryId,
+        farmerShopId: product.farmerShopId,
+        categoryName: product.category.name,
+        
+      })),
+    };
+  }
 }
