@@ -1,6 +1,5 @@
-// src/news/dto/create-news.dto.ts
-
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, IsUrl, MaxLength } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString, IsUrl, MaxLength, IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateNewsDto {
   @IsString()
@@ -8,8 +7,10 @@ export class CreateNewsDto {
   @MaxLength(255)
   title: string;
 
+  @IsNumber()
+  @Type(() => Number) // Ensures it’s transformed to number before validation
   @IsNotEmpty()
-  categoryId: number; 
+  categoryId: number;
 
   @IsString()
   @IsNotEmpty()

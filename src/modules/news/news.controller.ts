@@ -30,7 +30,7 @@ export class NewsController {
     const imageUrl = file ? await this.cloudinaryService.uploadNewsImage(file) : null;  
 
 
-    const news = await this.newsService.create({...data, image: imageUrl } as CreateNewsDto);
+    const news = await this.newsService.create({...data, imageUrl: imageUrl } as CreateNewsDto);
 
     return {
       message: 'News created successfully',
@@ -52,6 +52,8 @@ export class NewsController {
       data: news.map((item: News) => ({
         id: item.id,
         title: item.title,
+        content: item.content,
+        newsCategory: item.category ? item.category.title : null,
         publishedAt: item.publishedAt,
         image: item.imageUrl,
       })),
@@ -75,6 +77,8 @@ export class NewsController {
         id: news.id,
         title: news.title,
         content: news.content,
+        newCategory: news.category ? news.category.title : null,
+        newsCategory: news.category ? news.category.title : null,
         publishedAt: news.publishedAt,
         image: news.imageUrl,
       },

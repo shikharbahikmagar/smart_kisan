@@ -27,7 +27,11 @@ async findAll() {
 
       const news = await this.newsRepository.find({
         order: { createdAt: 'DESC' },
-      });
+        relations: ['category'],
+
+      },
+      
+    );
 
       return news;
 
@@ -37,7 +41,8 @@ async findAll() {
     
 
     const news = await this.newsRepository.findOne({
-      where: { id, isActive: true },
+      where: { id },
+      relations: ['category'],
     });
 
     if (!news) {
@@ -49,7 +54,7 @@ async findAll() {
 
   async update(id: number, updateNewsDto: UpdateNewsDto) {
     
-    const news = await this.newsRepository.findOne({ where: { id } });
+    const news = await this.newsRepository.findOne({ where: { id }, relations: ['category'] });
 
     if (!news) {
       throw new NotFoundException(`News not found`);

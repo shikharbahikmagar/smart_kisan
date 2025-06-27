@@ -54,11 +54,12 @@ export class NoticeController {
     const notices = await this.noticeService.findAll();
     return {
       message: 'Notices retrieved successfully',
-      notices: notices.map((notice: Notice) => ({
+      data: notices.map((notice: Notice) => ({
         id: notice.id,
         title: notice.title,
         content: notice.content,
         image: notice.image,
+        publishedAt: notice.createdAt,
         isActive: notice.isActive,
       })),
     };
@@ -71,10 +72,11 @@ export class NoticeController {
     const notice = await this.noticeService.findOne(+id);
     return {
       message: 'Notice retrieved successfully',
-      notice: {
+      data: {
         id: notice.id,
         title: notice.title,
         content: notice.content,
+        publishedAt: notice.createdAt,
         image: notice.image,
         isActive: notice.isActive,
       },
