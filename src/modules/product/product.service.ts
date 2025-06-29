@@ -91,6 +91,7 @@ export class ProductService {
         name: true,
         description: true,
         price: true,
+        discountedPrice: true,
         image: true,
         categoryId: true,
         farmerShopId: true,
