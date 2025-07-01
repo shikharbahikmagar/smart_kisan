@@ -125,4 +125,9 @@ export class CloudinaryService {
   async uploadNoticeImage(file: Express.Multer.File): Promise<string> {
     return this.uploadMedia(file, 'notices/images');
   }
+
+  //upload slider image to 'sliders/images' folder
+  async uploadSliderImage(file: Express.Multer.File): Promise<string> {
+    return this.uploadMedia(file, 'sliders/images');
+  } 
 }

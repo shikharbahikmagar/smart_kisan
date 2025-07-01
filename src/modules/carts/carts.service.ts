@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import { User } from '../user/entities/user.entity';
@@ -42,7 +42,7 @@ export class CartsService {
 
     if (existingCart) {
       // if the product already exists in the cart, show error messsage product already exists in the cart
-      throw new NotFoundException('Product already exists in the cart');
+      throw new ConflictException('Product already exists in the cart');
 
     }
 
@@ -110,11 +110,60 @@ export class CartsService {
     return `This action returns a #${id} cart`;
   }
 
-  update(id: number, updateCartDto: UpdateCartDto) {
-    return `This action updates a #${id} cart`;
+  async updateCart(id: number, data: UpdateCartDto) {
+    
+
+    //console.log("helllo from service", data.cartId, data.quantity);
+
+    const cart = await this.cartRepository.findOne({ where: { id: data.cartId } });
+
+
+    if (!cart) {
+      throw new NotFoundException('Cart not found');
+
+
+    }
+
+    const product = await this.productRepository.findOne({ where: { id: cart.productId } });
+
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
+    console.log("prodct", product);
+
+    // Check if the quantity is valid
+    if (data.quantity <= 0) {
+      throw new ConflictException('Quantity must be at least 1');
+    } else if (data.quantity > product.stock) {
+      throw new ConflictException('Quantity exceeds available stock');
+    }
+
+    //console.log("fasdf",cart)
+
+    // Update the cart with the new data
+    Object.assign(cart, data);
+
+    // Save the updated cart
+    const updatedCart = await this.cartRepository.save(cart);
+
+    return updatedCart;
+
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} cart`;
+  async removeCartItem(userId: number, cartId: number) {
+    
+    const cart = await this.cartRepository.findOneOrFail({ where: { id: cartId, userId: userId } })
+
+    if (!cart) {
+      throw new NotFoundException('Cart item not found');
+    }
+
+    await this.cartRepository.remove(cart);
+
+    return {
+      message: 'Cart item removed successfully',
+    }
+
   }
 }

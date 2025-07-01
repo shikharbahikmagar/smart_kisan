@@ -82,13 +82,41 @@ export class CartsController {
     return this.cartsService.findOne(+id);  
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCartDto: UpdateCartDto) {
-    return this.cartsService.update(+id, updateCartDto);
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.USER)
+  @Post('update')
+  async update(@Body() data: UpdateCartDto, @User() user: authPayload) {
+
+    // console.log('hello from controller', data, user);
+
+    const updatedCart = await this.cartsService.updateCart(user.userId, data);
+
+    return {
+      message: 'Cart updated successfully',
+      data: {
+        id: updatedCart.id,
+        userId: updatedCart.userId,     
+        productId: updatedCart.productId,
+        quantity: updatedCart.quantity,
+        unitPrice: updatedCart.unitPrice,
+        totalPrice: updatedCart.totalPrice,
+        discountPrice: updatedCart.discountPrice,
+        cartCode: updatedCart.cartCode,
+      },
+    }
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.cartsService.remove(+id);
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.USER)
+  @Get('/remove/:id')
+  async remove(@Param('id') id: number, @User() user: authPayload) {
+    
+    await this.cartsService.removeCartItem(user.userId, id);
+
+    return {
+      message: 'Cart item removed successfully',
+
+    };
+    
   }
 }
