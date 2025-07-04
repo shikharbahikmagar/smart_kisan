@@ -35,11 +35,11 @@ export class CreateFarmerShopDto {
 
   @IsOptional()
   @IsString()
-  citizenshipFrontImage?: string;
+  citizenshipFrontImage?: string | null;
 
   @IsOptional()
   @IsString()
-  citizenshipBackImage?: string;
+  citizenshipBackImage?: string | null;
 
   @IsNotEmpty()
   @IsString()

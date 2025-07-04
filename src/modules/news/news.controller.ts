@@ -86,9 +86,20 @@ export class NewsController {
     
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateNewsDto: UpdateNewsDto) {
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @UseInterceptors(FileInterceptor('image'))
+  @Post(':id/edit')
+  async update(@Param('id') id: string, @Body() updateNewsDto: UpdateNewsDto, @UploadedFile() file: Express.Multer.File) {
+
+    if(file)
+    {
+      const imageUrl = file ? await this.cloudinaryService.uploadNewsImage(file) : '';  
+      updateNewsDto.image = imageUrl;
+    }
+
     return this.newsService.update(+id, updateNewsDto);
+    
   }
 
   @UseGuards(RolesGuard)

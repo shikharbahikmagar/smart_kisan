@@ -97,6 +97,8 @@ export class KnowledgeCategoryController {
     }
   }
 
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     

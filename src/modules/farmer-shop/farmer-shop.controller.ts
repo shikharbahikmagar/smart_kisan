@@ -66,6 +66,22 @@ export class FarmerShopController {
       citizenshipBackImage?: Express.Multer.File[];
     },
   ) {
+
+    if(!files.shopImage || files.shopImage.length === 0) {
+      throw new Error('Shop image is required');
+    }
+
+    if(!files.citizenshipFrontImage || files.citizenshipFrontImage.length === 0) {
+      throw new Error('Citizenship front image is required');
+    }
+
+    if(!files.citizenshipBackImage || files.citizenshipBackImage.length === 0) {
+      throw new Error('Citizenship back image is required');
+    }
+
+    
+
+
     const shopImageUrl =
       files.shopImage && files.shopImage.length > 0
         ? await this.cloudinaryService.uploadFarmerShopImage(files.shopImage[0])
