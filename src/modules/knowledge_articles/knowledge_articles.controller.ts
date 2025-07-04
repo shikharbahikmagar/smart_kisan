@@ -65,13 +65,17 @@ export class KnowledgeArticlesController {
 
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
-  @UseInterceptors(FileInterceptor('image'))
-  @Post('/update/:id')
+  @UseInterceptors(FileInterceptor('image')) 
+  @Post(':id/edit')
   async update(@Param('id') id: string, @Body() data: UpdateKnowledgeArticleDto, @UploadedFile() file: Express.Multer.File) {
 
-    const imageUrl = file ? await this.cloudinaryService.uploadKnowledgeArticleImage(file) : '';
+       if(file)
+    {
+       const imageUrl = file ? await this.cloudinaryService.uploadKnowledgeArticleImage(file) : '';
+        data.image = imageUrl;
+    }
 
-    const updatedArticle = await this.knowledgeArticlesService.update(+id, {...data, image: imageUrl} as UpdateKnowledgeArticleDto);
+    const updatedArticle = await this.knowledgeArticlesService.update(+id, data);
 
     return {
       message: `Knowledge Article with ID ${id} has been updated successfully`,
@@ -85,7 +89,7 @@ export class KnowledgeArticlesController {
 
   }
 
-  @Get('/remove/:id')
+  @Delete(':id')
   async remove(@Param('id') id: string) {
     
     await this.knowledgeArticlesService.remove(+id);

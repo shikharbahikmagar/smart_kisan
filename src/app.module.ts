@@ -17,7 +17,8 @@ import { NewsModule } from './modules/news/news.module';
 import { NewsCategoryModule } from './modules/news_category/news_category.module';
 import { KnowledgeArticlesModule } from './modules/knowledge_articles/knowledge_articles.module';
 import { NoticeModule } from './modules/notice/notice.module';
-import { SlidersModule } from './sliders/sliders.module';
+import { SlidersModule } from './modules/sliders/sliders.module';
+import { KnowledgeCategoryModule } from './modules/knowledge_category/knowledge_category.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { SlidersModule } from './sliders/sliders.module';
     KnowledgeArticlesModule,
     NoticeModule,
     SlidersModule,
+    KnowledgeCategoryModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,5 +1,5 @@
 import { Entity, Column } from "typeorm";
-import { BaseEntity } from "../../database/entities/base.entity";
+import { BaseEntity } from "../../../database/entities/base.entity";
 
 @Entity('sliders')
 export class Slider extends BaseEntity {

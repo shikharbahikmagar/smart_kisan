@@ -130,4 +130,11 @@ export class CloudinaryService {
   async uploadSliderImage(file: Express.Multer.File): Promise<string> {
     return this.uploadMedia(file, 'sliders/images');
   } 
+
+  //upload knowledge category image to 'knowledge-category/images' folder
+  async uploadKnowledgeCategoryImage(
+    file: Express.Multer.File,
+  ): Promise<string> {
+    return this.uploadMedia(file, 'knowledge-category/images');
+  }
 }

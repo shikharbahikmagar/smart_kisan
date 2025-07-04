@@ -3,13 +3,14 @@ import { KnowledgeArticlesService } from './knowledge_articles.service';
 import { KnowledgeArticlesController } from './knowledge_articles.controller';
 import { KnowledgeArticle } from './entities/knowledge_article.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CloudinaryModule } from '../../cloudinary/cloudinary.module';
-
+import {KnowledgeCategory} from '../knowledge_category/entities/knowledge_category.entity';
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([KnowledgeArticle]),
+    TypeOrmModule.forFeature([KnowledgeArticle, KnowledgeCategory]),
     CloudinaryModule, // Assuming CloudinaryService is a provider that needs to be imported
+    
   ],
   controllers: [KnowledgeArticlesController],
   providers: [KnowledgeArticlesService],

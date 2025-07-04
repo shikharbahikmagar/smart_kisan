@@ -15,6 +15,9 @@ export class CreateKnowledgeArticleDto {
   @MaxLength(255)
   image?: string;
 
+  @IsNotEmpty()
+  categoryId: number;
+
   // publishedAt is optional and usually set automatically,
   // but if you want to allow custom dates, include this:
   @IsOptional()

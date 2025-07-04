@@ -50,12 +50,32 @@ export class SlidersController {
 
   }
 
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @Get('admin')
+  async adminFindAll() {
+    
+
+    const sliders = await this.slidersService.adminFindAll();
+    return {
+      message: 'Sliders retrieved successfully',
+      data: sliders.map(slider => ({
+        id: slider.id,
+        title: slider.title,
+        description: slider.description,
+        image: slider.image,
+        isActive: slider.isActive,
+      })),
+    };
+
+  }
+
   @IsPublic()
   @Get()
   async findAll() {
     
 
-    const sliders = await this.slidersService.findAll();
+    const sliders = await this.slidersService.adminFindAll();
     return {
       message: 'Sliders retrieved successfully',
       data: sliders.map(slider => ({

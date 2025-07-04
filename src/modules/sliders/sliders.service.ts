@@ -27,6 +27,18 @@ export class SlidersService {
     
   }
 
+  async adminFindAll() {
+    
+
+    const sliders = await this.sliderRepository.find({
+      where: { isActive: true },
+      order: { createdAt: 'DESC' },
+    });
+
+    return sliders;
+
+  }
+
   async findAll() {
     
 
