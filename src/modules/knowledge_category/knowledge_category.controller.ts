@@ -25,7 +25,7 @@ export class KnowledgeCategoryController {
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
   @UseInterceptors(FileInterceptor('image'))
-  @Post()
+  @Post('create')
   async create(@Body() data: CreateKnowledgeCategoryDto, @UploadedFile() file: Express.Multer.File) {
 
     if (!file) {
@@ -37,7 +37,7 @@ export class KnowledgeCategoryController {
       const imageUrl = file ? await this.cloudinaryService.uploadKnowledgeCategoryImage(file) : '';
     
 
-      const newCategory = await this.knowledgeCategoryService.create({...data, image: imageUrl});
+      const newCategory = await this.knowledgeCategoryService.create({...data, imageUrl: imageUrl});
 
 
       return {
@@ -87,7 +87,7 @@ export class KnowledgeCategoryController {
 
     const imageUrl = file ? await this.cloudinaryService.uploadKnowledgeCategoryImage(file) : '';
 
-    const updatedCategory =  await this.knowledgeCategoryService.update(+id, {...data, image: imageUrl});
+    const updatedCategory =  await this.knowledgeCategoryService.update(+id, {...data, imageUrl: imageUrl});
     return {
       message: 'Knowledge Category updated successfully',
       data: {

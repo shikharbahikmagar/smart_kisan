@@ -11,6 +11,6 @@ export class CreateKnowledgeCategoryDto {
     
     @IsOptional()
     @IsString()
-    image?: string;
+    imageUrl?: string;
 
 }
