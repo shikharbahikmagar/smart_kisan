@@ -76,7 +76,7 @@ export class SlidersController {
 
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
-  @Get('/update-status/:id')
+  @Patch(':id')
   async updateStatus(@Param('id') id: string) {
 
     const updatedSlider = await this.slidersService.updateStatus(+id);
@@ -92,7 +92,9 @@ export class SlidersController {
     
   }
 
-  @Get('/:id/remove')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @Delete(':id')
   async remove(@Param('id') id: string) {
 
 

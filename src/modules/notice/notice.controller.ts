@@ -83,13 +83,42 @@ export class NoticeController {
     };
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateNoticeDto: UpdateNoticeDto) {
-    return this.noticeService.update(+id, updateNoticeDto);
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @UseInterceptors(FileInterceptor('image'))
+  @Post(':id/edit')
+  async update(@Param('id') id: string, @Body() updateNoticeDto: UpdateNoticeDto, @UploadedFile() file: Express.Multer.File) {
+
+    if (file) {
+      const imageUrl = await this.cloudinaryService.uploadMedia(file, 'notices');
+      updateNoticeDto.image = imageUrl;
+    }
+
+    // console.log('Update Notice DTO:', id, updateNoticeDto);
+    
+    
+      const updatedNotice = await this.noticeService.update(+id, updateNoticeDto);
+
+      return {
+        message: 'Notice updated successfully',
+        data: {
+          id: updatedNotice.id,
+          title: updatedNotice.title,
+          content: updatedNotice.content,
+          image: updatedNotice.image,
+          isActive: updatedNotice.isActive,
+        },
+      };
+
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.noticeService.remove(+id);
+  async remove(@Param('id') id: string) {
+    
+    const result = await this.noticeService.remove(+id);
+    return {
+      message: result.message,
+    };
+
   }
 }

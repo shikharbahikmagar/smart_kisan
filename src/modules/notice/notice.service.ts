@@ -50,6 +50,8 @@ export class NoticeService {
     
     const notice = await this.noticeRepository.findOne({ where: { id } });
 
+    console.log(updateNoticeDto)
+
     if (!notice) {
       throw new NotFoundException(`Notice not found`);
     }

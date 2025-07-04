@@ -31,7 +31,6 @@ export class SlidersService {
     
 
     const sliders = await this.sliderRepository.find({
-      where: { isActive: true },
       order: { createdAt: 'DESC' },
     });
 
