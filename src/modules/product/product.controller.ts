@@ -80,17 +80,11 @@ export class ProductController {
     return {
       message: 'Product details retrieved successfully',
       data: {
-        id: product.id,
-        name: product.name,
-        description: product.description,
-        price: product.price,
-        discountedPrice: product.discountedPrice,
-        image: product.image,
-        categoryName: product.category.name,
-        farmerShopName: product.farmerShop.shopName,
-      },
-    };
+        ...product
+      }
+    
   }
+}
 
   @UseGuards(RolesGuard)
   @Roles(UserRole.FARMER)
@@ -110,6 +104,26 @@ export class ProductController {
         description: updatedProduct.description,
         price: updatedProduct.price,
         discountedPrice: updatedProduct.discountedPrice,
+        image: updatedProduct.image,
+        categoryId: updatedProduct.categoryId,
+        farmerShopId: updatedProduct.farmerShopId,
+      },
+    };
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.FARMER)
+  @Get('update-status/:id')
+  async updateProductStatus(@Param('id', ParseIntPipe) id: number) {
+    const updatedProduct = await this.productService.updateProductStatus(id);
+
+    return {
+      message: 'Product status updated successfully',
+      data: {
+        id: updatedProduct.id,
+        name: updatedProduct.name,
+        description: updatedProduct.description,
+        price: updatedProduct.price,
         image: updatedProduct.image,
         categoryId: updatedProduct.categoryId,
         farmerShopId: updatedProduct.farmerShopId,

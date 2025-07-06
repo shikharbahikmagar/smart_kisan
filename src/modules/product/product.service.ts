@@ -139,12 +139,29 @@ export class ProductService {
 
   }
 
+  async updateProductStatus(id: number) {
+
+
+    const product = await this.productRepository.findOne({ where: { id } });
+
+    if (!product) {
+      throw new NotFoundException(`Product not found`);
+    }
+
+    // Toggle the status
+    product.isAvailable = !product.isAvailable;
+
+    const updatedProduct = await this.productRepository.save(product);
+
+    return updatedProduct;
+  }
+
   async deleteProduct(id: number) {
     
     const product = await this.productRepository.findOne({ where: { id } });
 
     if (!product) {
-      throw new NotFoundException(`Product with id ${id} not found`);
+      throw new NotFoundException(`Product not found`);
     }
 
     await this.productRepository.remove(product);
