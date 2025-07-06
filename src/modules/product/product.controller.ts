@@ -92,9 +92,16 @@ export class ProductController {
   @Patch(':id')
   async updateProduct(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateProductDto, @UploadedFile() file: Express.Multer.File) {
 
-    const productImage = file ? await this.cloudinaryService.uploadProductImage(file) : '';
+   if(file)
+   {
+    const productImage = await this.cloudinaryService.uploadProductImage(file);
 
-    const updatedProduct = await this.productService.updateProduct(id, {...data, image: productImage });
+    data.image = productImage;
+
+
+   }
+
+    const updatedProduct = await this.productService.updateProduct(id, data);
 
     return {
       message: 'Product updated successfully',
