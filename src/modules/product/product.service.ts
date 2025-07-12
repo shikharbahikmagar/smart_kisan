@@ -81,6 +81,48 @@ export class ProductService {
     return products;
   }
 
+
+    async AllProducts() {
+
+    //get all products from the database
+    const products = await this.productRepository.find(
+      {
+        relations: ['category', 'farmerShop'],
+        where: { isAvailable: true },
+        order: {
+          createdAt: 'DESC',
+        },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          price: true,
+          image: true,
+          categoryId: true,
+          farmerShopId: true,
+          createdAt: true,
+          updatedAt: true,
+          category: {
+            id: true,
+            name: true,
+            icon: true,
+          },
+          farmerShop: {
+            id: true,
+            shopName: true,
+            shopAddress: true,
+            shopDescription: true,
+            shopImage: true,
+          },
+        },
+      }
+    )
+
+
+
+    return products;
+  }
+
   async productDetails(id: number) {
     
     const product = await this.productRepository.findOne({

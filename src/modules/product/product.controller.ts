@@ -59,6 +59,23 @@ export class ProductController {
       message: 'Products retrieved successfully',
       data: {
         products: products.map((product: Product) => ({
+         ...product,
+        })),
+      },
+    }
+  }
+
+
+  @IsPublic()
+  @Get('all')
+  async AllProducts() {
+
+    const products = await this.productService.AllProducts();
+
+    return {
+      message: 'Products retrieved successfully',
+      data: {
+        products: products.map((product: Product) => ({
           id: product.id,
           name: product.name,
           description: product.description,
