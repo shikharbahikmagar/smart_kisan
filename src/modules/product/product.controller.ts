@@ -76,13 +76,8 @@ export class ProductController {
       message: 'Products retrieved successfully',
       data: {
         products: products.map((product: Product) => ({
-          id: product.id,
-          name: product.name,
-          description: product.description,
-          price: product.price,
-          image: product.image,
-          categoryId: product.categoryId,
-          farmerShopId: product.farmerShopId,
+          ...product,
+          
         })),
       },
     }

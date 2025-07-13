@@ -1,7 +1,8 @@
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { BaseEntity } from '../../../database/entities/base.entity';
 import { User } from '../../user/entities/user.entity';
 import { Product } from '../../product/entities/product.entity';
+import { Order } from '../../orders/entities/order.entity';
 
 @Entity('farmer_shops')
 export class FarmerShop extends BaseEntity {
@@ -76,7 +77,7 @@ export class FarmerShop extends BaseEntity {
   })
   contactNumber?: string;
 
-  @ManyToOne(() => User, (user) => user.farmerShops, { onDelete: 'CASCADE' })
+  @OneToOne(() => User, (user) => user.farmerShops, { onDelete: 'CASCADE' })
   @JoinColumn({
     name: 'userId',
   })
@@ -85,7 +86,10 @@ export class FarmerShop extends BaseEntity {
   @Column()
   userId: number;
 
-  @ManyToOne(() => Product, (product) => product.farmerShop)
+  @OneToMany(() => Product, (product) => product.farmerShop)
   products: Product[];
+
+  @OneToMany(() => Order, (order) => order.farmerShop)
+  orders: Order[];
   
 }

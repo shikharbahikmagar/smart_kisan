@@ -19,6 +19,7 @@ import { KnowledgeArticlesModule } from './modules/knowledge_articles/knowledge_
 import { NoticeModule } from './modules/notice/notice.module';
 import { SlidersModule } from './modules/sliders/sliders.module';
 import { KnowledgeCategoryModule } from './modules/knowledge_category/knowledge_category.module';
+import { OrdersModule } from './modules/orders/orders.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { KnowledgeCategoryModule } from './modules/knowledge_category/knowledge_
     NoticeModule,
     SlidersModule,
     KnowledgeCategoryModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [

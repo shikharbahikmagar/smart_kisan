@@ -4,6 +4,7 @@ import { Column } from 'typeorm';
 import { Category } from '../../category/entities/category.entity';
 import { FarmerShop } from '../../farmer-shop/entities/farmer-shop.entity';
 import { Cart } from '../../carts/entities/cart.entity';
+import { Order } from '../../orders/entities/order.entity';
 
 
 @Entity('products')
@@ -84,6 +85,9 @@ export class Product  extends BaseEntity{
     @Column({ type: 'boolean', default: false })
     isAvailable: boolean;
 
+
+    @OneToMany(() => Order, (order) => order.product)
+    orders: Order[];
 
 
     @ManyToOne(() => Category, (category) => category.products, { onDelete: 'CASCADE' })

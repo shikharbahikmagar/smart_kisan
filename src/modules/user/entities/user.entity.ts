@@ -4,6 +4,7 @@ import { UserRole } from '../../../constants/enum/user-role.enum';
 import { FarmerShop } from '../../farmer-shop/entities/farmer-shop.entity';
 import { Expert } from '../../expert/entities/expert.entity';
 import { Cart } from '../../carts/entities/cart.entity';
+import { Order } from '../../orders/entities/order.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -75,7 +76,10 @@ export class User extends BaseEntity {
   })
   isAdmin?: boolean;
 
-  @OneToMany(() => FarmerShop, (shop) => shop.user)
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
+
+  @OneToOne(() => FarmerShop, (shop) => shop.user)
   farmerShops: FarmerShop[];
 
   @OneToOne(() => Expert, (expert) => expert.user)
