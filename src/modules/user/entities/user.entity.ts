@@ -5,7 +5,6 @@ import { FarmerShop } from '../../farmer-shop/entities/farmer-shop.entity';
 import { Expert } from '../../expert/entities/expert.entity';
 import { Cart } from '../../carts/entities/cart.entity';
 import { Order } from '../../orders/entities/order.entity';
-
 @Entity('users')
 export class User extends BaseEntity {
   @Column()

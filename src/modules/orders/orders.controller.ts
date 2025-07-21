@@ -2,14 +2,29 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UseInterceptors } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { UserRole } from 'src/constants/enum/user-role.enum';
+import { User } from 'src/common/decorators/user.decorator';
+import { authPayload } from '../auth/jwt.strategy';
 
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
-  @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.ordersService.create(createOrderDto);
+
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.USER)
+  @UseInterceptors(FileInterceptor('file'))
+  @Post('create')
+  async create(@Body() data: CreateOrderDto, @User() user: authPayload) {
+    
+      const newOrder = await this.ordersService.create(data, user.userId); 
+
+
   }
 
   @Get()

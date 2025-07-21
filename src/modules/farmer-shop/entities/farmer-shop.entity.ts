@@ -3,11 +3,12 @@ import { BaseEntity } from '../../../database/entities/base.entity';
 import { User } from '../../user/entities/user.entity';
 import { Product } from '../../product/entities/product.entity';
 import { Order } from '../../orders/entities/order.entity';
+import { OrderItem } from '../../../modules/order_items/entities/order_item.entity';
 
 @Entity('farmer_shops')
 export class FarmerShop extends BaseEntity {
   @Column({
-    type: 'varchar',
+    type: 'varchar'
   })
   shopName: string;
 
@@ -89,7 +90,7 @@ export class FarmerShop extends BaseEntity {
   @OneToMany(() => Product, (product) => product.farmerShop)
   products: Product[];
 
-  @OneToMany(() => Order, (order) => order.farmerShop)
-  orders: Order[];
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.farmerShop)
+  orderItems: OrderItem[];
   
 }

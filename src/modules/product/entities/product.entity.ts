@@ -5,6 +5,7 @@ import { Category } from '../../category/entities/category.entity';
 import { FarmerShop } from '../../farmer-shop/entities/farmer-shop.entity';
 import { Cart } from '../../carts/entities/cart.entity';
 import { Order } from '../../orders/entities/order.entity';
+import { OrderItem } from '../../../modules/order_items/entities/order_item.entity';
 
 
 @Entity('products')
@@ -86,8 +87,8 @@ export class Product  extends BaseEntity{
     isAvailable: boolean;
 
 
-    @OneToMany(() => Order, (order) => order.product)
-    orders: Order[];
+    @OneToMany(() => OrderItem, (orderItem) => orderItem.product)
+    orderItems: OrderItem[];
 
 
     @ManyToOne(() => Category, (category) => category.products, { onDelete: 'CASCADE' })

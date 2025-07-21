@@ -139,6 +139,13 @@ export class CartsService {
       throw new ConflictException('Quantity exceeds available stock');
     }
 
+    const totalPrice = data.quantity * product.price;
+
+    // Update the cart item with the new quantity and total price
+    cart.quantity = data.quantity;
+    cart.totalPrice = totalPrice;
+    cart.unitPrice = product.price;
+
     //console.log("fasdf",cart)
 
     // Update the cart with the new data

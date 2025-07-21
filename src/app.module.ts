@@ -20,6 +20,7 @@ import { NoticeModule } from './modules/notice/notice.module';
 import { SlidersModule } from './modules/sliders/sliders.module';
 import { KnowledgeCategoryModule } from './modules/knowledge_category/knowledge_category.module';
 import { OrdersModule } from './modules/orders/orders.module';
+import { OrderItemsModule } from './modules/order_items/order_items.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { OrdersModule } from './modules/orders/orders.module';
     SlidersModule,
     KnowledgeCategoryModule,
     OrdersModule,
+    OrderItemsModule,
   ],
   controllers: [AppController],
   providers: [
