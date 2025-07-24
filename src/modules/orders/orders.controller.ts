@@ -22,14 +22,39 @@ export class OrdersController {
   @Post('create')
   async create(@Body() data: CreateOrderDto, @User() user: authPayload) {
     
-      const newOrder = await this.ordersService.create(data, user.userId); 
+      const orderResp = await this.ordersService.create(data, user.userId); 
 
+      // console.log("New Order Detail", orderResp);
+
+      if(orderResp) {
+        return { message: 'Order created successfully', totalAmount: orderResp.totalAmount, paymentMethod: orderResp.paymentMethod };
+      }
+      return { message: 'Failed to create order' };
 
   }
 
-  @Get()
-  findAll() {
-    return this.ordersService.findAll();
+
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.USER)
+  @Get('user')
+  async getUserOrders(@User() user: authPayload) {
+    const orders = await this.ordersService.getUserOrders(user.userId);
+    return {
+      message: 'Orders fetched successfully',
+      data: orders,
+    }
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.FARMER)
+  @Get('farmer')
+  async getFarmerOrders(@User() user: authPayload) {
+    const orders = await this.ordersService.getFarmerOrders(user.userId);
+
+    return {
+      message: 'Orders fetched successfully',
+      data: orders,
+    }
   }
 
   @Get(':id')

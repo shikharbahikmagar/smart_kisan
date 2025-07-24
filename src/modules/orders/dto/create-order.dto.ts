@@ -4,7 +4,7 @@ import { PaymentMethod } from "../../../constants/enum/payment-method-enum";
 export class CreateOrderDto {
 
     @IsNotEmpty()
-    full_name: string;
+    fullName: string;
 
     @IsNotEmpty()
     email: string;
@@ -13,16 +13,16 @@ export class CreateOrderDto {
     phone: string;
 
     @IsNotEmpty()
-    s_address: string;
+    SAddress: string;
 
     @IsNotEmpty()
-    s_city: string;
+    SCity: string;
 
     @IsNotEmpty()
-    s_province: string;
+    SProvince: string;
 
     @IsNotEmpty()
-    s_tole: string;
+    STole: string;
 
     @IsNotEmpty()
     paymentMethod: PaymentMethod;

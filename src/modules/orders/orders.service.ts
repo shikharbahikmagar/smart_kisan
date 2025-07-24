@@ -9,6 +9,8 @@ import { Cart } from '../carts/entities/cart.entity';
 import { OrderStatus } from 'src/constants/enum/order-status-enum';
 import { PaymentStatus } from 'src/constants/enum/payment-status-enum';
 import { OrderItem } from '../order_items/entities/order_item.entity';
+import { Product } from '../product/entities/product.entity';
+import { FarmerShop } from '../farmer-shop/entities/farmer-shop.entity';
 
 @Injectable()
 export class OrdersService {
@@ -21,6 +23,10 @@ export class OrdersService {
   private readonly cartRepository: Repository<Cart>;
   @InjectRepository(OrderItem)
   private readonly orderItemRepository: Repository<OrderItem>;
+  @InjectRepository(Product)
+  private readonly productRepository: Repository<Product>;
+  @InjectRepository(FarmerShop)
+  private readonly farmerShopRepository: Repository<FarmerShop>;
 
   async create(data: CreateOrderDto, userId: number) {
     
@@ -46,14 +52,14 @@ export class OrdersService {
 
       const orderData = {
 
-        full_name: data.full_name,
+        full_name: data.fullName,
         email: data.email,
         phone: data.phone,
         userId: user.id,
-        s_address: data.s_address,
-        s_city: data.s_city,
-        s_province: data.s_province,
-        s_tole: data.s_tole,
+        s_address: data.SAddress,
+        s_city: data.SCity,
+        s_province: data.SProvince,
+        s_tole: data.STole,
         totalPrice: cart.reduce((total, item) => total + (item.product.price * item.quantity), 0),
         order_status: OrderStatus.PENDING,
         paymentMethod: data.paymentMethod,
@@ -84,6 +90,14 @@ export class OrdersService {
 
       const newOrderItems = await this.orderItemRepository.save(orderItems);
 
+      //reduce the product stock
+      await Promise.all(cart.map(async (cartItem) => {
+        const product = await this.productRepository.findOne({ where: { id: cartItem.productId } });
+        if (product) {
+          product.stock -= cartItem.quantity;
+          await this.productRepository.save(product);
+        }
+      }));
 
       // console.log("new order", order)
 
@@ -92,13 +106,44 @@ export class OrdersService {
       // Clear the cart after order creation
       await this.cartRepository.delete({ userId: user.id });  
 
-      return order;
+      const totalAmount = newOrderItems.reduce((total, item) => total + item.totalPrice, 0);
+
+      console.log("Total Amount", totalAmount);
       
+
+      if(order && newOrderItems)
+      {
+        return {
+          totalAmount: totalAmount,
+          paymentMethod: data.paymentMethod,
+        };
+      }
 
   }
 
-  findAll() {
-    return `This action returns all orders`;
+  async getUserOrders(userId: number) {
+    const orders = await this.orderRepository.find(
+      { where: { userId },
+      relations: ['items', 'items.product', 'items.farmerShop']  }
+    );
+    return orders;
+  }
+
+  async getFarmerOrders(farmerId: number) {
+
+    //get farmer shop details first
+    const farmerShop = await this.farmerShopRepository.findOne({ where: { userId: farmerId } });
+
+    if (!farmerShop) {
+      throw new NotFoundException('Farmer shop not found');
+    }
+
+    const farmerShopId = farmerShop.id;
+
+    const orders = await this.orderItemRepository.find({ where: { farmerShopId: farmerShopId },
+      relations: ['order', 'product']
+    });
+    return orders;
   }
 
   findOne(id: number) {
