@@ -1,4 +1,4 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsOptional } from "class-validator";
 import { PaymentMethod } from "../../../constants/enum/payment-method-enum";
 
 export class CreateOrderDto {
@@ -26,6 +26,9 @@ export class CreateOrderDto {
 
     @IsNotEmpty()
     paymentMethod: PaymentMethod;
+
+    @IsOptional()
+    transactionId?: string;
 
 
 

@@ -50,6 +50,9 @@ export class OrdersService {
         throw new NotFoundException('Cart is empty, Please add items to the cart before placing an order.');
       }
 
+      //transactionId generation logic
+
+
       const orderData = {
 
         full_name: data.fullName,
@@ -64,6 +67,7 @@ export class OrdersService {
         order_status: OrderStatus.PENDING,
         paymentMethod: data.paymentMethod,
         paymentStatus: PaymentStatus.PENDING,
+        transactionId: data.transactionId, 
 
       }
 
@@ -109,6 +113,9 @@ export class OrdersService {
       const totalAmount = newOrderItems.reduce((total, item) => total + item.totalPrice, 0);
 
       console.log("Total Amount", totalAmount);
+
+      //generate transactionId if payment method is not cash on delivery
+     
       
 
       if(order && newOrderItems)
@@ -116,9 +123,37 @@ export class OrdersService {
         return {
           totalAmount: totalAmount,
           paymentMethod: data.paymentMethod,
+          transactionId: order.transactionId,
+          orderId: order.id,
         };
       }
 
+  }
+
+  async handleEsewaSuccess(orderId: number, userId?: number) {
+    
+    const order = await this.orderRepository.findOne({
+      where: { id: orderId, userId: userId },
+      relations: ['items'],
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    // Update the payment status
+    order.paymentStatus = PaymentStatus.COMPLETED;
+
+    // Save the updated order
+    await this.orderRepository.save(order);
+
+    return {
+      message: 'Payment successful',
+      orderId: order.id,
+      totalAmount: order.totalPrice,
+      paymentMethod: order.paymentMethod,
+      transactionId: order.transactionId,
+    };
   }
 
   async getUserOrders(userId: number) {
@@ -141,8 +176,12 @@ export class OrdersService {
     const farmerShopId = farmerShop.id;
 
     const orders = await this.orderItemRepository.find({ where: { farmerShopId: farmerShopId },
-      relations: ['order', 'product']
+      relations: ['order', 'product', 'product.farmerShop', 'order.user']
     });
+  
+
+    console.log("ordder hai", orders);
+    
     return orders;
   }
 

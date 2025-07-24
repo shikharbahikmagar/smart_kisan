@@ -27,7 +27,8 @@ export class OrdersController {
       // console.log("New Order Detail", orderResp);
 
       if(orderResp) {
-        return { message: 'Order created successfully', totalAmount: orderResp.totalAmount, paymentMethod: orderResp.paymentMethod };
+        return { message: 'Order created successfully', 
+          totalAmount: orderResp.totalAmount, paymentMethod: orderResp.paymentMethod, transactionId: orderResp.transactionId, orderId: orderResp.orderId };
       }
       return { message: 'Failed to create order' };
 
@@ -41,7 +42,35 @@ export class OrdersController {
     const orders = await this.ordersService.getUserOrders(user.userId);
     return {
       message: 'Orders fetched successfully',
-      data: orders,
+      //return order so that in frontend we can show the order details easily with product details
+      data: orders.map(order => ({
+          customer: {
+            fullName: order.full_name,
+            email: order.email,
+            phone: order.phone,
+          },
+          totalAmount: order.totalPrice,
+          paymentMethod: order.paymentMethod,
+          paymentStatus: order.paymentStatus,
+          status: order.order_status,
+          createdAt: order.createdAt,
+          shippingAddress: order.s_address,
+          shippingCity: order.s_city,
+          shippingProvince: order.s_province,
+          shippingTole: order.s_tole,
+          transactionId: order.transactionId,
+          orderId: order.id,
+          orderItems: order.items.map(item => ({
+            id: item.id,
+            productId: item.productId,
+            farmerShopId: item.farmerShopId,
+            quantity: item.quantity,
+            price: item.price,
+            totalPrice: item.totalPrice,
+            productName: item.product.name,
+            productImage: item.product.image,
+          }))
+      })),
     }
   }
 
@@ -53,8 +82,38 @@ export class OrdersController {
 
     return {
       message: 'Orders fetched successfully',
-      data: orders,
-    }
+
+      data: orders.map(order => ({
+        id: order.id,
+        fullName: order.order.user.firstName + ' ' + order.order.user.lastName,
+        email: order.order.user.email,
+        phone: order.order.phone,
+        address: order.order.s_address,
+        totalAmount: order.price * order.quantity,
+        paymentMethod: order.order.paymentMethod,
+        paymentStatus: order.order.paymentStatus,
+        status: order.order.order_status,
+        createdAt: order.createdAt,
+        productName: order.product.name,
+        quantity: order.quantity,
+        shippingAddress: order.order.s_address,
+        shippingCity: order.order.s_city,
+        shippingProvince: order.order.s_province,
+        shippingTole: order.order.s_tole,
+        
+      })),
+      
+      
+    };
+  }
+
+  // Update payment status
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.USER)
+  @Post('update-payment-status')
+  async updatePaymentStatus(@Body('orderId') orderId: number, @User() user: authPayload) {
+    // Handle the success callback from esewa
+    return this.ordersService.handleEsewaSuccess(orderId, user.userId);
   }
 
   @Get(':id')

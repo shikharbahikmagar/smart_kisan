@@ -21,6 +21,15 @@ export class Order extends BaseEntity {
     )
   userId: number;
 
+    @Column(
+        {
+            type: 'varchar',
+            length: 255,
+            nullable: true
+        }
+    )
+    transactionId: string;
+
 
     @Column({
         type: 'varchar',
