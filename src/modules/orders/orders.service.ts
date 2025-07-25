@@ -185,6 +185,22 @@ export class OrdersService {
     return orders;
   }
 
+  // Get order details
+  async getOrderDetails(orderId: number, userId: number) {
+    const order = await this.orderRepository.findOne({
+      where: { id: orderId, userId: userId },
+      relations: ['items', 'items.product', 'items.farmerShop', 'user'],
+    });
+
+    console.log("first", order);
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    return order;
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} order`;
   }

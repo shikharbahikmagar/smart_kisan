@@ -116,6 +116,47 @@ export class OrdersController {
     return this.ordersService.handleEsewaSuccess(orderId, user.userId);
   }
 
+  //get order details
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.USER)
+  @Get('details/:id')
+  async getOrderDetails(@Param('id') id: string, @User() user: authPayload) {
+
+
+    const orderDetails = await this.ordersService.getOrderDetails(+id, user.userId);
+
+    return {
+      message: 'Order details fetched successfully',
+      data: {
+        id: orderDetails.id,
+        fullName: orderDetails.full_name,
+        email: orderDetails.email,
+        phone: orderDetails.phone,
+        shippingAddress: orderDetails.s_address,
+        shippingCity: orderDetails.s_city,
+        shippingProvince: orderDetails.s_province,
+        shippingTole: orderDetails.s_tole,
+        totalAmount: orderDetails.totalPrice,
+        paymentMethod: orderDetails.paymentMethod,
+        paymentStatus: orderDetails.paymentStatus,
+        status: orderDetails.order_status,
+        transactionId: orderDetails.transactionId,
+        createdAt: orderDetails.createdAt,
+        items: orderDetails.items.map(item => ({
+          id: item.id,
+          productId: item.productId,
+          farmerShopId: item.farmerShopId,
+          quantity: item.quantity,
+          price: item.price,
+          totalPrice: item.totalPrice,
+          productName: item.product.name,
+          productImage: item.product.image,
+        })),
+      },
+    }
+    
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.ordersService.findOne(+id);
