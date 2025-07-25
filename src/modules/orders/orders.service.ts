@@ -187,9 +187,9 @@ export class OrdersService {
 
   // Get order details
   async getOrderDetails(orderId: number, userId: number) {
-    const order = await this.orderRepository.findOne({
-      where: { id: orderId, userId: userId },
-      relations: ['items', 'items.product', 'items.farmerShop', 'user'],
+    const order = await this.orderItemRepository.findOne({
+      where: { id: orderId, order: { userId: userId } },
+      relations: ['order', 'product', 'product.farmerShop'],
     });
 
     console.log("first", order);

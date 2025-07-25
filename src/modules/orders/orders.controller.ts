@@ -128,32 +128,26 @@ export class OrdersController {
     return {
       message: 'Order details fetched successfully',
       data: {
-        id: orderDetails.id,
-        fullName: orderDetails.full_name,
-        email: orderDetails.email,
-        phone: orderDetails.phone,
-        shippingAddress: orderDetails.s_address,
-        shippingCity: orderDetails.s_city,
-        shippingProvince: orderDetails.s_province,
-        shippingTole: orderDetails.s_tole,
-        totalAmount: orderDetails.totalPrice,
-        paymentMethod: orderDetails.paymentMethod,
-        paymentStatus: orderDetails.paymentStatus,
-        status: orderDetails.order_status,
-        transactionId: orderDetails.transactionId,
-        createdAt: orderDetails.createdAt,
-        items: orderDetails.items.map(item => ({
-          id: item.id,
-          productId: item.productId,
-          farmerShopId: item.farmerShopId,
-          quantity: item.quantity,
-          price: item.price,
-          totalPrice: item.totalPrice,
-          productName: item.product.name,
-          productImage: item.product.image,
-        })),
-      },
+        productName: orderDetails.product.name,
+        productImage: orderDetails.product.image,
+        quantity: orderDetails.quantity,
+        price: orderDetails.price,
+        totalPrice: orderDetails.totalPrice,
+        orderId: orderDetails.orderId,
+        paymentMethod: orderDetails.order.paymentMethod,
+        transactionId: orderDetails.order.transactionId,
+        shippingAddress: orderDetails.order.s_address,
+        shippingCity: orderDetails.order.s_city,
+        shippingProvince: orderDetails.order.s_province,
+        shippingTole: orderDetails.order.s_tole,
+        orderStatus: orderDetails.order.order_status,
+        customer: {
+          fullName: orderDetails.order.user.firstName + ' ' + orderDetails.order.user.lastName,
+          email: orderDetails.order.user.email,
+          phone: orderDetails.order.phone,
+        },
     }
+      };
     
   }
 
