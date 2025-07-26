@@ -25,7 +25,6 @@ export class Expert extends BaseEntity {
 
   @Column({
     type: 'varchar',
-    unique: true,
     nullable: true,
   })
   qualification: string;
