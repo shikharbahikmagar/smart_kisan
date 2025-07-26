@@ -594,18 +594,21 @@ export class UserService {
   }
 
   //get expert by id where id match and role is expert
-  async getExpertById(id: number): Promise<Expert> {
+  async getExpertById(id: number): Promise<User> {
     try {
-      const expert = await this.expertRepository.findOne({
+      const expert = await this.userRepository.findOne({
         where: {
-          userId: id,
+          id,
+          role: UserRole.EXPERT, // Ensure the user is an expert
         },
-        relations: ['user'], // Include user details if needed
+        relations: ['expertProfile'], // Include expert details if needed
       });
 
       if (!expert) {
         throw new HttpException('Expert not found', HttpStatus.NOT_FOUND);
       }
+
+      // console.log("Expert details:", expert);
 
       return expert;
 

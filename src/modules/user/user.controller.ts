@@ -181,23 +181,23 @@ export class UserController {
   @Roles(UserRole.ADMIN)
   @Get('expert/:id')
   async getExpertById(@Param('id') id: string) {
-    const expert = await this.userService.getExpertById(+id);
+    const user = await this.userService.getExpertById(+id);
 
     return {
       message: 'Expert retrieved successfully',
       data: {
-        id: expert.user.id,
-        firstName: expert.user.firstName,
-        lastName: expert.user.lastName,
-        contactNumber: expert.user.contactNumber,
-        email: expert.user.email,
-        avatar: expert.user.avatar,
-        expertise: expert.expertise,
-        qualification: expert.qualification,
-        experience_years: expert.experience_years,
-        availability: expert.availability,
-        bio: expert.bio,
-        isVerified: expert.user.isVerified,
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        contactNumber: user.contactNumber,
+        email: user.email,
+        avatar: user.avatar,
+        expertise: user.expertProfile.expertise,
+        qualification: user.expertProfile.qualification,
+        experience_years: user.expertProfile.experience_years,
+        availability: user.expertProfile.availability,
+        bio: user.expertProfile.bio,
+        isVerified: user.isVerified,
       },
     };
   }
