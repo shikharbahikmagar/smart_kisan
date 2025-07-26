@@ -8,6 +8,7 @@ import {
   UseGuards,
   HttpException,
   HttpStatus,
+  Param,
 } from '@nestjs/common';
 
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -172,6 +173,33 @@ export class UserController {
         bio: expert.bio,
         isVerified: expert.user.isVerified,
       })),
+    };
+  }
+
+  //get expert details by id
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @Get('expert/:id')
+  async getExpertById(@Param('id') id: string) {
+    const expert = await this.userService.getExpertById(+id);
+
+    return {
+      message: 'Expert retrieved successfully',
+      data: {
+        id: expert.user.id,
+        firstName: expert.user.firstName,
+        lastName: expert.user.lastName,
+        contactNumber: expert.user.contactNumber,
+        email: expert.user.email,
+        avatar: expert.user.avatar,
+        isVerified: expert.user.isVerified,
+        isAdmin: expert.user.isAdmin,
+        expertise: expert.expertise,
+        qualification: expert.qualification,
+        experience_years: expert.experience_years,
+        availability: expert.availability,
+        bio: expert.bio,
+      },
     };
   }
 

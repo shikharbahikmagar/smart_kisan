@@ -592,6 +592,28 @@ export class UserService {
     }
   }
 
+  //get expert by id
+  async getExpertById(id: number): Promise<Expert> {
+    try {
+      const expert = await this.expertRepository.findOne({
+        where: { id },
+        relations: ['user'], // Include user details if needed
+      });
+
+      if (!expert) {
+        throw new HttpException('Expert not found', HttpStatus.NOT_FOUND);
+      }
+
+      return expert;
+    } catch (error) {
+      console.error('Error fetching expert by ID:', error);
+      throw new HttpException(
+        'Failed to fetch expert',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   generateRefreshToken(user: User): string {
     const payload: authPayload = {
       userId: user.id,
