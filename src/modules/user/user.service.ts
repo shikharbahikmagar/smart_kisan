@@ -9,6 +9,7 @@ import { sign } from 'jsonwebtoken';
 import { Str } from '../../common/helpers/str.helper';
 import { MailService } from 'src/mail/mail.service';
 import { authPayload } from '../auth/jwt.strategy';
+import { Expert } from '../expert/entities/expert.entity';
 
 @Injectable()
 export class UserService {
@@ -16,6 +17,8 @@ export class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private readonly mailService: MailService,
+    @InjectRepository(Expert)
+    private expertRepository: Repository<Expert>,
   ) {}
 
   // Create a new user
@@ -55,8 +58,34 @@ export class UserService {
         isVerified: data.isVerified,
         isAdmin: data.isAdmin,
       });
+      
 
       const result = await this.userRepository.save(user);
+
+      if(!result) {
+        throw new HttpException(
+          {
+            status: HttpStatus.INTERNAL_SERVER_ERROR,
+            message: 'Failed to create user',
+            error: 'Internal Server Error',
+          },
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+      // If the user is an expert, create an expert profile
+      if (data.role === 'expert') {
+        const expert = this.expertRepository.create({
+          userId: result.id,
+          bio: data.bio || '',
+          expertise: data.expertise || '',
+          qualification: data.qualification || '',
+          experience_years: data.experience_years || 0,
+          availability: data.availability || false,
+        });
+
+        await this.expertRepository.save(expert);
+      }
 
       return result;
       // Save user to the database (this is just a simulation)

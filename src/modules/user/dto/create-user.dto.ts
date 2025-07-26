@@ -18,6 +18,21 @@ export class CreateUserDto {
   @IsString()
   lastName: string;
 
+  @IsOptional()
+  expertise?: string;
+
+  @IsOptional()
+  qualification?: string;
+
+  @IsOptional()
+  experience_years?: number;
+
+  @IsOptional()
+  bio?: string;
+
+  @IsOptional()
+  availability?: boolean;
+
   @IsNotEmpty()
   @IsString()
   contactNumber: string;

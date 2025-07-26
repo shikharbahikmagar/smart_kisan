@@ -7,11 +7,12 @@ import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 import { MailService } from 'src/mail/mail.service';
+import { Expert } from '../expert/entities/expert.entity';
 
 @Module({
   imports: [
     ConfigModule, // 👈 Required to inject ConfigService
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Expert]),
     CloudinaryModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
