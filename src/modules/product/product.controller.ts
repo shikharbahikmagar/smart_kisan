@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -65,6 +65,21 @@ export class ProductController {
     }
   }
 
+  //get search products
+  @IsPublic()
+  @Get('search')
+  async searchProducts(@Query('keyword') query: string) {
+    const products = await this.productService.searchProducts(query);
+
+    return {
+      message: 'Products retrieved successfully',
+      data: {
+        products: products.map((product: Product) => ({
+          ...product,
+        })),
+      },
+    };
+  }
 
   @IsPublic()
   @Get('all')

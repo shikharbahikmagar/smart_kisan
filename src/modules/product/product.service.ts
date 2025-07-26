@@ -3,7 +3,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Like, Repository } from 'typeorm';
 import { FarmerShop } from '../farmer-shop/entities/farmer-shop.entity';
 
 @Injectable()
@@ -119,6 +119,21 @@ export class ProductService {
     )
 
 
+
+    return products;
+  }
+
+
+  //get search products
+  async searchProducts(query: string) {
+   const products = await this.productRepository
+  .createQueryBuilder('products')
+  .leftJoinAndSelect('products.category', 'category')
+  .leftJoinAndSelect('products.farmerShop', 'farmerShop')
+  .where(`to_tsvector('english', products.name || ' ' || products.description) @@ plainto_tsquery(:query)`, { query })
+  .getMany();
+
+    // console.log("Search Query:", query);
 
     return products;
   }

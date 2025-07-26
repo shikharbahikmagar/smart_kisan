@@ -192,13 +192,12 @@ export class UserController {
         contactNumber: expert.user.contactNumber,
         email: expert.user.email,
         avatar: expert.user.avatar,
-        isVerified: expert.user.isVerified,
-        isAdmin: expert.user.isAdmin,
         expertise: expert.expertise,
         qualification: expert.qualification,
         experience_years: expert.experience_years,
         availability: expert.availability,
         bio: expert.bio,
+        isVerified: expert.user.isVerified,
       },
     };
   }

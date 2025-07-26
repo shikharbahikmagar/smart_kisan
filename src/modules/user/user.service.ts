@@ -10,6 +10,7 @@ import { Str } from '../../common/helpers/str.helper';
 import { MailService } from 'src/mail/mail.service';
 import { authPayload } from '../auth/jwt.strategy';
 import { Expert } from '../expert/entities/expert.entity';
+import { UserRole } from 'src/constants/enum/user-role.enum';
 
 @Injectable()
 export class UserService {
@@ -592,11 +593,13 @@ export class UserService {
     }
   }
 
-  //get expert by id
+  //get expert by id where id match and role is expert
   async getExpertById(id: number): Promise<Expert> {
     try {
       const expert = await this.expertRepository.findOne({
-        where: { id },
+        where: {
+          userId: id,
+        },
         relations: ['user'], // Include user details if needed
       });
 
@@ -605,6 +608,7 @@ export class UserService {
       }
 
       return expert;
+
     } catch (error) {
       console.error('Error fetching expert by ID:', error);
       throw new HttpException(
