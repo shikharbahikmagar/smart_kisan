@@ -125,6 +125,8 @@ export class UserController {
   }
 
   //user profile get
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.FARMER, UserRole.EXPERT, UserRole.ADMIN)
   @Get('profile')
   async getProfile(@User() user: authPayload) {
     const userDetails = await this.userService.getProfile(user.userId);

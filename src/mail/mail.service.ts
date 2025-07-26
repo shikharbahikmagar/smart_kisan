@@ -84,4 +84,30 @@ export class MailService {
       console.error('Error sending email:', error);
     }
   }
+
+  //order created mail
+  async sendOrderCreatedMail(
+    to: string,
+    subject: string,
+    templateName: string,
+    context: TemplateContext,
+  ) {
+    const html = this.compileTemplate(templateName, context);
+
+    const mailOptions = {
+      from: process.env.MAIL_FROM || 'no-reply@example.com',
+      to,
+      subject,
+      html,
+    };
+
+    try {
+      return this.transporter.sendMail(mailOptions);
+      console.log('Email sent successfully');
+    } catch (error) {
+      console.error('Error sending email:', error);
+    }
+
+  }
+
 }

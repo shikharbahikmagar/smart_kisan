@@ -5,6 +5,7 @@ import { Product } from '../../product/entities/product.entity';
 import { FarmerShop } from '../../farmer-shop/entities/farmer-shop.entity';
 import { User } from '../../user/entities/user.entity';
 import { Column, ManyToOne } from 'typeorm';
+import {OrderItemStatus} from '../../../constants/enum/order-item-status-enum';
 
 @Entity('order_items')
 export class OrderItem extends BaseEntity {
@@ -61,6 +62,16 @@ export class OrderItem extends BaseEntity {
     }
   )
   totalPrice: number;
+
+  @Column(
+    {
+      type: 'enum',
+      enum: OrderItemStatus,
+      default: OrderItemStatus.PENDING,
+      nullable: false,
+    }
+  )
+  item_status: OrderItemStatus;
 
   @ManyToOne(() => Order, (order) => order.items)
   order: Order;

@@ -5,6 +5,7 @@ import { FarmerShop } from '../../farmer-shop/entities/farmer-shop.entity';
 import { Expert } from '../../expert/entities/expert.entity';
 import { Cart } from '../../carts/entities/cart.entity';
 import { Order } from '../../orders/entities/order.entity';
+import { ChatMessage } from '../../chat/entities/chat.entity';
 @Entity('users')
 export class User extends BaseEntity {
   @Column()
@@ -86,4 +87,11 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Cart, (cart) => cart.user)
   carts: Cart[];
+
+
+  @OneToMany(() => ChatMessage, (chatMessage) => chatMessage.sender)
+  sentMessages: ChatMessage[];
+
+  @OneToMany(() => ChatMessage, (chatMessage) => chatMessage.receiver)
+  receivedMessages: ChatMessage[];
 }

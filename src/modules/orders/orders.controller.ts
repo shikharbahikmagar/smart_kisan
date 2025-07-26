@@ -66,6 +66,7 @@ export class OrdersController {
             farmerShopId: item.farmerShopId,
             quantity: item.quantity,
             price: item.price,
+            itemStatus: item.item_status,
             totalPrice: item.totalPrice,
             productName: item.product.name,
             productImage: item.product.image,
@@ -92,9 +93,11 @@ export class OrdersController {
         totalAmount: order.price * order.quantity,
         paymentMethod: order.order.paymentMethod,
         paymentStatus: order.order.paymentStatus,
-        status: order.order.order_status,
+        orderStatus: order.order.order_status,
+        itemStatus: order.item_status,
         createdAt: order.createdAt,
         productName: order.product.name,
+        productImage: order.product.image,
         quantity: order.quantity,
         shippingAddress: order.order.s_address,
         shippingCity: order.order.s_city,
@@ -135,6 +138,7 @@ export class OrdersController {
         totalPrice: orderDetails.totalPrice,
         orderId: orderDetails.orderId,
         paymentMethod: orderDetails.order.paymentMethod,
+        paymentStatus: orderDetails.order.paymentStatus,
         transactionId: orderDetails.order.transactionId,
         shippingAddress: orderDetails.order.s_address,
         shippingCity: orderDetails.order.s_city,
@@ -146,9 +150,66 @@ export class OrdersController {
           email: orderDetails.order.user.email,
           phone: orderDetails.order.phone,
         },
+
     }
       };
     
+  }
+
+  //get farmer order details
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.FARMER)
+  @Get('farmer/details/:id')
+  async getFarmerOrderDetails(@Param('id') id: string, @User() user: authPayload) {
+    const orderDetails = await this.ordersService.getFarmerOrderDetails(+id, user.userId); 
+    
+    
+    return {
+      message: 'Order details fetched successfully',
+      data: {
+        productName: orderDetails.product.name,
+        productImage: orderDetails.product.image,
+        quantity: orderDetails.quantity,
+        price: orderDetails.price,
+        totalPrice: orderDetails.totalPrice,
+        orderId: orderDetails.order.id,
+        paymentMethod: orderDetails.order.paymentMethod,
+        paymentStatus: orderDetails.order.paymentStatus,
+        transactionId: orderDetails.order.transactionId,
+        shippingAddress: orderDetails.order.s_address,
+        shippingCity: orderDetails.order.s_city,
+        shippingProvince: orderDetails.order.s_province,
+        shippingTole: orderDetails.order.s_tole,
+        itemStatus: orderDetails.item_status,
+        customer: {
+          fullName: orderDetails.order.user.firstName + ' ' + orderDetails.order.user.lastName,
+          email: orderDetails.order.user.email,
+          phone: orderDetails.order.phone,
+        },
+      }
+    };
+
+
+  }
+
+
+  //update order Item status
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.FARMER)
+  @Post('update-item-status/:id')
+  async updateOrderItemStatus(@Param('id') id: string, @Body('itemStatus') itemStatus: string, @User() user: authPayload) {
+    const updatedOrder = await this.ordersService.updateOrderItemStatus(+id, itemStatus, user.userId);
+
+    if(!updatedOrder) {
+      return { message: 'Failed to update order item status' };
+    }
+    return {
+      message: 'Order item status updated successfully',
+        data: {
+          orderId: updatedOrder.order.id,
+        }
+    };
+
   }
 
   @Get(':id')

@@ -11,6 +11,7 @@ import { PaymentStatus } from 'src/constants/enum/payment-status-enum';
 import { OrderItem } from '../order_items/entities/order_item.entity';
 import { Product } from '../product/entities/product.entity';
 import { FarmerShop } from '../farmer-shop/entities/farmer-shop.entity';
+import { OrderItemStatus } from 'src/constants/enum/order-item-status-enum';
 
 @Injectable()
 export class OrdersService {
@@ -175,7 +176,14 @@ export class OrdersService {
 
     const farmerShopId = farmerShop.id;
 
-    const orders = await this.orderItemRepository.find({ where: { farmerShopId: farmerShopId },
+    //order in descending order by createdAt
+
+    const orders = await this.orderItemRepository.find({ where: { farmerShopId: farmerShopId,
+      
+     },
+      order: { createdAt: 'DESC' },
+     
+
       relations: ['order', 'product', 'product.farmerShop', 'order.user']
     });
   
@@ -189,7 +197,15 @@ export class OrdersService {
   async getOrderDetails(orderId: number, userId: number) {
     const order = await this.orderItemRepository.findOne({
       where: { id: orderId, order: { userId: userId } },
-      relations: ['order', 'product', 'product.farmerShop', 'order.user'],
+      relations: ['order', 'product', 'product.farmerShop'],
+    });
+
+    if (!order) throw new NotFoundException('Order not found');
+
+// Fetch user fields separately to avoid sensitive logic
+    const user = await this.userRepository.findOne({
+      where: { id: order.order.userId },
+      select: ['firstName', 'lastName', 'email'], // Only safe fields
     });
 
     console.log("first", order);
@@ -198,7 +214,101 @@ export class OrdersService {
       throw new NotFoundException('Order not found');
     }
 
-    return order;
+   return {
+    ...order,
+    order: {
+      ...order.order,
+      user: {
+        ...user,
+        phone: order.order.phone, // include phone if stored on `order`
+      },
+    }
+  };
+  }
+
+
+  // Get farmer order details
+  async getFarmerOrderDetails(orderId: number, farmerId: number) {
+    // Get farmer shop details first
+    const farmerShop = await this.farmerShopRepository.findOne({ where: { userId: farmerId } });  
+    if (!farmerShop) {
+      throw new NotFoundException('Farmer shop not found');
+    }
+
+    const farmerShopId = farmerShop.id;
+
+    const order = await this.orderItemRepository.findOne({
+      where: { id: orderId, farmerShopId: farmerShopId },
+      relations: ['order', 'product', 'product.farmerShop'],
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    // Fetch user fields separately to avoid sensitive logic
+    const user = await this.userRepository.findOne({
+      where: { id: order.order.userId },
+      select: ['firstName', 'lastName', 'email', 'contactNumber'], // Only safe fields
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+   return {
+  ...order,
+  order: {
+    ...order.order,
+    user: {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.contactNumber, // ✅ correct source of phone
+    },
+  },
+};
+
+
+
+
+  }
+
+  //update order item status
+  async updateOrderItemStatus(orderItemId: number, itemStatus: string, farmerId: number) {
+    const orderItem = await this.orderItemRepository.findOne({
+      where: { id: orderItemId, product: { farmerShop: { userId: farmerId } } },
+      relations: ['order', 'product'],
+    });
+
+    if (!orderItem) {
+      throw new NotFoundException('Order item not found');
+    }
+
+    if(itemStatus == 'pending') {
+      orderItem.item_status = OrderItemStatus.PENDING;
+    }else if(itemStatus == 'processing') {
+      orderItem.item_status = OrderItemStatus.PROCESSING;
+    }else if(itemStatus == 'shipped') {
+      orderItem.item_status = OrderItemStatus.SHIPPED;  
+    }
+    else if(itemStatus == 'delivered') {
+      orderItem.item_status = OrderItemStatus.DELIVERED;
+    } else if(itemStatus == 'completed') {
+      orderItem.item_status = OrderItemStatus.COMPLETED;
+    } else if(itemStatus == 'cancelled') {
+      orderItem.item_status = OrderItemStatus.CANCELLED;
+    } else {
+      throw new NotFoundException('Invalid item status');
+    }
+
+
+
+
+    await this.orderItemRepository.save(orderItem);
+
+
+    return orderItem;
   }
 
   findOne(id: number) {

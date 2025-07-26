@@ -21,6 +21,7 @@ import { SlidersModule } from './modules/sliders/sliders.module';
 import { KnowledgeCategoryModule } from './modules/knowledge_category/knowledge_category.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { OrderItemsModule } from './modules/order_items/order_items.module';
+import { ChatModule } from './modules/chat/chat.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { OrderItemsModule } from './modules/order_items/order_items.module';
     KnowledgeCategoryModule,
     OrdersModule,
     OrderItemsModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [
