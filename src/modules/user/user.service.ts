@@ -575,6 +575,23 @@ export class UserService {
     }); // Short-lived access token`
   }
 
+
+  //get all experts
+  async getAllExperts(): Promise<Expert[]> {
+    try {
+      const experts = await this.expertRepository.find({
+        relations: ['user'], // Include user details if needed
+      });
+      return experts;
+    } catch (error) {
+      console.error('Error fetching experts:', error);
+      throw new HttpException(
+        'Failed to fetch experts',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   generateRefreshToken(user: User): string {
     const payload: authPayload = {
       userId: user.id,

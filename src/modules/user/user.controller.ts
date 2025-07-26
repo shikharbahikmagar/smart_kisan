@@ -149,6 +149,32 @@ export class UserController {
     };
   }
 
+  //get all experts
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @Get('experts')
+  async getAllExperts() {
+    const experts = await this.userService.getAllExperts();
+
+    return {
+      message: 'Experts retrieved successfully',
+      data: experts.map((expert) => ({
+        id: expert.user.id,
+        firstName: expert.user.firstName,
+        lastName: expert.user.lastName,
+        contactNumber: expert.user.contactNumber,
+        email: expert.user.email,
+        avatar: expert.user.avatar,
+        expertise: expert.expertise,
+        qualification: expert.qualification,
+        experience_years: expert.experience_years,
+        availability: expert.availability,
+        bio: expert.bio,
+        isVerified: expert.user.isVerified,
+      })),
+    };
+  }
+
   //send email verification code
 
   @Get('send-email-verification')
