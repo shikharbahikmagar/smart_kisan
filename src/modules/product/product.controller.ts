@@ -103,11 +103,16 @@ export class ProductController {
   async productDetails(@Param('id') id: string) {
     
     const product = await this.productService.productDetails(+id);
+
+
     
     return {
       message: 'Product details retrieved successfully',
       data: {
-        ...product
+        ...product.product,
+        relatedProducts: product.relatedProducts.map((relatedProduct: Product) => ({
+          ...relatedProduct,
+        })),
       }
     
   }

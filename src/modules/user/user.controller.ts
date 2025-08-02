@@ -9,6 +9,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  Query,
 } from '@nestjs/common';
 
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -22,6 +23,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { UserRole } from 'src/constants/enum/user-role.enum';
 import { IsPublic } from 'src/common/decorators/public.decorator';
 import { authPayload } from '../auth/jwt.strategy';
+import { ResetPwdDto } from './dto/reset-pwd-dto.';
 
 //controller for user module
 @Controller('user')
@@ -152,7 +154,7 @@ export class UserController {
 
   //get all experts
   @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.FARMER)
   @Get('experts')
   async getAllExperts() {
     const experts = await this.userService.getAllExperts();
@@ -201,6 +203,31 @@ export class UserController {
       },
     };
   }
+
+@UseGuards(RolesGuard)
+@Roles(UserRole.EXPERT)
+@Get('farmers')
+async getFarmers(
+  @Query('farmerIds') ids: string, 
+  @User() user: authPayload
+) {
+  const farmerIds = ids.split(',').map(id => Number(id));
+  const farmers = await this.userService.getFarmers(farmerIds);
+
+  return {
+    message: 'Farmers retrieved successfully',
+    data: farmers.map((farmer) => ({
+      id: farmer.id,
+      firstName: farmer.firstName,
+      lastName: farmer.lastName,
+      contactNumber: farmer.contactNumber,
+      email: farmer.email,
+      avatar: farmer.avatar,
+      isVerified: farmer.isVerified,
+    })),
+  };
+}
+
 
   //send email verification code
 
@@ -258,7 +285,13 @@ export class UserController {
   //user forgot password
   @IsPublic()
   @Post('forgot-password')
+  @UseInterceptors(FileInterceptor('avatar'))
   async forgotPassword(@Body() data: { email: string }) {
+
+
+    // console.log("email aayo", data.email);
+
+
     await this.userService.forgotPassword(data.email);
 
     return {
@@ -272,20 +305,26 @@ export class UserController {
   //reset user password
   @IsPublic()
   @Post('reset-password')
+  @UseInterceptors(FileInterceptor('avatar'))
   async resetPassword(
-    @Body()
-    data: {
-      token: string;
-      new_password: string;
-      confirm_password: string;
-    },
+    @Body() data: ResetPwdDto,
   ) {
+
+    if(!data.token || !data.new_password || !data.confirm_password) {
+      throw new HttpException(
+        'Token, new password and confirm password are required',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     if (data.new_password !== data.confirm_password) {
       throw new HttpException(
         'Password and confirm password do not match',
         HttpStatus.BAD_REQUEST,
       );
     }
+
+    // console.log('Resetting password for token:', data.token);
 
     const user = await this.userService.resetPassword(data);
 

@@ -12,7 +12,7 @@ import { OrderItem } from '../order_items/entities/order_item.entity';
 import { Product } from '../product/entities/product.entity';
 import { FarmerShop } from '../farmer-shop/entities/farmer-shop.entity';
 import { OrderItemStatus } from 'src/constants/enum/order-item-status-enum';
-
+import { MailService } from 'src/mail/mail.service';
 @Injectable()
 export class OrdersService {
 
@@ -28,6 +28,8 @@ export class OrdersService {
   private readonly productRepository: Repository<Product>;
   @InjectRepository(FarmerShop)
   private readonly farmerShopRepository: Repository<FarmerShop>;
+
+  // constructor(private readonly mailService: MailService) {}
 
   async create(data: CreateOrderDto, userId: number) {
     
@@ -113,9 +115,27 @@ export class OrdersService {
 
       const totalAmount = newOrderItems.reduce((total, item) => total + item.totalPrice, 0);
 
-      console.log("Total Amount", totalAmount);
+      // console.log("Total Amount", totalAmount);
 
       //generate transactionId if payment method is not cash on delivery
+
+      // this.mailService.sendOrderCreatedMail(
+      //   user.email,
+      //   'Order Created Successfully',
+      //   'order-created',
+      //   {
+      //     userName: user.firstName,
+      //     orderId: order.id,
+      //     totalAmount: totalAmount,
+      //     paymentMethod: data.paymentMethod,
+      //     transactionId: order.transactionId,
+      //     items: newOrderItems.map(item => ({
+      //       productName: item.product.name,
+      //       quantity: item.quantity,
+      //       price: item.price,
+      //       totalPrice: item.totalPrice,
+      //     })),
+      //   },)
      
       
 

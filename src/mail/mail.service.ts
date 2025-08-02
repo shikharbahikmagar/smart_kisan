@@ -5,7 +5,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 interface TemplateContext {
-  [key: string]: string | number | boolean | undefined | null;
+  [key: string]: string | number | boolean | undefined | null | any[];
 }
 
 @Injectable()

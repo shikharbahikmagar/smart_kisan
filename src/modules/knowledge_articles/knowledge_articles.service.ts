@@ -3,7 +3,7 @@ import { CreateKnowledgeArticleDto } from './dto/create-knowledge_article.dto';
 import { UpdateKnowledgeArticleDto } from './dto/update-knowledge_article.dto';
 import { KnowledgeArticle } from './entities/knowledge_article.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 
 @Injectable()
 export class KnowledgeArticlesService {
@@ -46,8 +46,22 @@ export class KnowledgeArticlesService {
       throw new NotFoundException(`Knowledge Article not found`);
     }
 
-    return knowledgeArticle;
+    const recentArticle = await this.knowledgeArticleRepository.find({
+      where: { id: Not(id),
+  
+       }, // Exclude the current article
+      order: {
+        createdAt: 'DESC',
+      },
+      take: 3, // Limit to 3 related articles
+    });
 
+
+
+    return {
+      knowledgeArticle,
+      recentArticle,
+    };
   }
 
   async update(id: number, data: UpdateKnowledgeArticleDto) {
@@ -73,7 +87,9 @@ export class KnowledgeArticlesService {
 
   async remove(id: number) {
 
-    const knowledgeArticle = await this.findOne(id);
+    const knowledgeArticle = await this.knowledgeArticleRepository.findOne({
+      where: { id },
+    });
 
     if (!knowledgeArticle) {
       throw new Error(`Knowledge Article with ID ${id} not found`);

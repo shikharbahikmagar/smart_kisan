@@ -3,7 +3,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Like, Repository } from 'typeorm';
+import { ILike, Like, Not, Repository } from 'typeorm';
 import { FarmerShop } from '../farmer-shop/entities/farmer-shop.entity';
 
 @Injectable()
@@ -70,7 +70,7 @@ export class ProductService {
             shopName: true,
             shopAddress: true,
             shopDescription: true,
-            shopImage: true,
+            FarmCertificate: true,
           },
         },
       }
@@ -112,7 +112,7 @@ export class ProductService {
             shopName: true,
             shopAddress: true,
             shopDescription: true,
-            shopImage: true,
+            FarmCertificate: true,
           },
         },
       }
@@ -142,7 +142,7 @@ export class ProductService {
     
     const product = await this.productRepository.findOne({
       where: { id },
-      relations: ['category', 'farmerShop'],
+      relations: ['category', 'farmerShop', 'reviews.user'],
       select: {
         id: true,
         name: true,
@@ -167,7 +167,20 @@ export class ProductService {
           shopName: true,
           shopAddress: true,
           shopDescription: true,
-          shopImage: true,
+          FarmCertificate: true,
+        },
+        reviews: {
+          id: true,
+          content: true,
+          rating: true,
+          createdAt: true,
+          updatedAt: true,
+          user: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            avatar: true,
+          },
         },
       },
     });
@@ -176,7 +189,19 @@ export class ProductService {
       throw new NotFoundException(`Product not found`);
     }
 
-    return product;
+    //also return related products from the same category
+    const relatedProducts = await this.productRepository.find({
+      where: { categoryId: product.categoryId, id: Not(id) }, // Exclude the current product
+      take: 4, // Limit to 4 related products
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+
+    return {
+      product,
+      relatedProducts,
+    };
 
   }
 

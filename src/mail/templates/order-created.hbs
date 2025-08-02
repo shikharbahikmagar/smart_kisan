@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Order Confirmation</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        padding: 20px;
+        color: #333;
+      }
+      .email-container {
+        max-width: 600px;
+        margin: auto;
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      }
+      h2 {
+        color: #28a745;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+      }
+      th, td {
+        text-align: left;
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+      }
+      th {
+        background-color: #f0f0f0;
+      }
+      .total {
+        font-weight: bold;
+        text-align: right;
+        padding-top: 10px;
+      }
+      .footer {
+        margin-top: 30px;
+        font-size: 14px;
+        text-align: center;
+        color: #777;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-container">
+      <h2>Hello, {{userName}}</h2>
+      <p>Thank you for your order! Below are the details:</p>
+
+      <p><strong>Order ID:</strong> {{orderId}}</p>
+      <p><strong>Transaction ID:</strong> {{transactionId}}</p>
+      <p><strong>Payment Method:</strong> {{paymentMethod}}</p>
+
+      <h3>Ordered Items:</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Price (Rs)</th>
+            <th>Total (Rs)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each orderItems}}
+          <tr>
+            <td>{{this.productName}}</td>
+            <td>{{this.quantity}}</td>
+            <td>{{this.price}}</td>
+            <td>{{this.totalPrice}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+
+      <p class="total">Total Amount: Rs. {{totalAmount}}</p>
+
+      <div class="footer">
+        <p>Need help? Just reply to this email and we’ll be happy to assist you.</p>
+        <p>– The Smart Kisan Team</p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { Str } from '../../common/helpers/str.helper';
@@ -104,6 +104,36 @@ export class UserService {
       // Otherwise, throw a generic internal server error
       throw new HttpException(
         'Failed to create user',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+    //get all farmers details according to received farmer id which is in array
+  async getFarmers(farmerIds: number[]): Promise<User[]> {
+    try {
+
+
+      // Get the farmers associated with the expert
+      const farmers = await this.userRepository.find({
+        where: {
+          id: In(farmerIds), // Assuming expert has a farmerIds array
+          role: UserRole.FARMER,
+        },
+      });
+
+      return farmers;
+    } catch (error) {
+      console.error('Error getting farmers:', error);
+
+      // Re-throw HttpExceptions so Nest can handle them properly
+      if (error instanceof HttpException) {
+        throw error;
+      }
+
+      // Otherwise, throw a generic internal server error
+      throw new HttpException(
+        'Failed to get farmers',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -418,6 +448,8 @@ export class UserService {
 
       //generate 6 digit verification code
       const verificationCode = Str.random(6);
+
+      // console.log('Verification Code:', verificationCode, 'for user:', user.email);
 
       //set the verification code and its expiration time
       user.password_reset_token = verificationCode;

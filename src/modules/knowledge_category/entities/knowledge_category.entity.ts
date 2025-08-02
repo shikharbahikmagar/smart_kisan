@@ -19,4 +19,5 @@ export class KnowledgeCategory extends BaseEntity {
     articles: KnowledgeCategory[];
 
 
+
 }

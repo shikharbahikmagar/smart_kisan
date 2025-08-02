@@ -34,7 +34,7 @@ export class FarmerShopController {
   @UseInterceptors(
     FileFieldsInterceptor(
       [
-        { name: 'shopImage', maxCount: 1 },
+        { name: 'FarmCertificate', maxCount: 1 },
         { name: 'citizenshipFrontImage', maxCount: 1 },
         { name: 'citizenshipBackImage', maxCount: 1 },
       ],
@@ -61,14 +61,14 @@ export class FarmerShopController {
     @User() user: authPayload,
     @UploadedFiles()
     files: {
-      shopImage?: Express.Multer.File[];
+      FarmCertificate?: Express.Multer.File[];
       citizenshipFrontImage?: Express.Multer.File[];
       citizenshipBackImage?: Express.Multer.File[];
     },
   ) {
 
-    if(!files.shopImage || files.shopImage.length === 0) {
-      throw new Error('Shop image is required');
+    if(!files.FarmCertificate || files.FarmCertificate.length === 0) {
+      throw new Error('Farm certificate is required');
     }
 
     if(!files.citizenshipFrontImage || files.citizenshipFrontImage.length === 0) {
@@ -79,13 +79,17 @@ export class FarmerShopController {
       throw new Error('Citizenship back image is required');
     }
 
+    console.log("farmcertificate", files.FarmCertificate);
     
 
 
-    const shopImageUrl =
-      files.shopImage && files.shopImage.length > 0
-        ? await this.cloudinaryService.uploadFarmerShopImage(files.shopImage[0])
+    const FarmCertificateUrl =
+      files.FarmCertificate && files.FarmCertificate.length > 0
+        ? await this.cloudinaryService.uploadFarmerShopCertificateImage(files.FarmCertificate[0])
         : '';
+
+
+     
 
     const citizenshipFrontImageUrl =
       files.citizenshipFrontImage && files.citizenshipFrontImage.length > 0
@@ -105,7 +109,7 @@ export class FarmerShopController {
       {
         ...createFarmerShopDto,
 
-        shopImage: shopImageUrl,
+        FarmCertificate: FarmCertificateUrl,
         citizenshipFrontImage: citizenshipFrontImageUrl,
         citizenshipBackImage: citizenshipBackImageUrl,
       },
@@ -123,7 +127,7 @@ export class FarmerShopController {
         street: farmerShop.street,
         shopEmail: farmerShop.shopEmail,
         shopDescription: farmerShop.shopDescription,
-        shopImage: farmerShop.shopImage,
+        FarmCertificate: farmerShop.FarmCertificate,
         citizenshipFrontImage: farmerShop.citizenshipFrontImage,
         citizenshipBackImage: farmerShop.citizenshipBackImage,
         panNumber: farmerShop.panNumber,
@@ -149,7 +153,7 @@ export class FarmerShopController {
         street: farmerShopp.street,
         shopEmail: farmerShopp.shopEmail,
         shopDescription: farmerShopp.shopDescription,
-        shopImage: farmerShopp.shopImage,
+        FarmCertificate: farmerShopp.FarmCertificate,
         citizenshipFrontImage: farmerShopp.citizenshipFrontImage,
         citizenshipBackImage: farmerShopp.citizenshipBackImage,
         panNumber: farmerShopp.panNumber,
@@ -182,7 +186,7 @@ export class FarmerShopController {
         street: farmerShop.street,
         shopEmail: farmerShop.shopEmail,
         shopDescription: farmerShop.shopDescription,
-        shopImage: farmerShop.shopImage,
+        FarmCertificate: farmerShop.FarmCertificate,
         citizenshipFrontImage: farmerShop.citizenshipFrontImage,
         citizenshipBackImage: farmerShop.citizenshipBackImage,
         panNumber: farmerShop.panNumber,
@@ -198,7 +202,7 @@ export class FarmerShopController {
   @UseInterceptors(
     FileFieldsInterceptor(
       [
-        { name: 'shopImage', maxCount: 1 },
+        { name: 'FarmCertificate', maxCount: 1 },
         { name: 'citizenshipFrontImage', maxCount: 1 },
         { name: 'citizenshipBackImage', maxCount: 1 },
       ],
@@ -221,16 +225,16 @@ export class FarmerShopController {
     @User() user: authPayload,
     @UploadedFiles()
     files: {
-      shopImage?: Express.Multer.File[];
+      FarmCertificate?: Express.Multer.File[];
       citizenshipFrontImage?: Express.Multer.File[];
       citizenshipBackImage?: Express.Multer.File[];
     },
   ) {
     console.log(farmerShop);
 
-    const shopImageUrl =
-      files.shopImage && files.shopImage.length > 0
-        ? await this.cloudinaryService.uploadFarmerShopImage(files.shopImage[0])
+    const FarmCertificateUrl =
+      files.FarmCertificate && files.FarmCertificate.length > 0
+        ? await this.cloudinaryService.uploadFarmerShopCertificateImage(files.FarmCertificate[0])
         : '';
 
     const citizenshipFrontImageUrl =
@@ -252,7 +256,7 @@ export class FarmerShopController {
         {
           ...farmerShop,
 
-          shopImage: shopImageUrl,
+          FarmCertificate: FarmCertificateUrl,
           citizenshipFrontImage: citizenshipFrontImageUrl,
           citizenshipBackImage: citizenshipBackImageUrl,
         },
@@ -276,7 +280,7 @@ export class FarmerShopController {
         street: updatedFarmerShop.street,
         shopEmail: updatedFarmerShop.shopEmail,
         shopDescription: updatedFarmerShop.shopDescription,
-        shopImage: updatedFarmerShop.shopImage,
+        FarmCertificate: updatedFarmerShop.FarmCertificate,
         citizenshipFrontImage: updatedFarmerShop.citizenshipFrontImage,
         citizenshipBackImage: updatedFarmerShop.citizenshipBackImage,
         panNumber: updatedFarmerShop.panNumber,

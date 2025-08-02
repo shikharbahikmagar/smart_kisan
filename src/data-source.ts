@@ -15,6 +15,8 @@ import { KnowledgeCategory } from './modules/knowledge_category/entities/knowled
 import { Order } from './modules/orders/entities/order.entity';
 import { OrderItem } from './modules/order_items/entities/order_item.entity';
 import { ChatMessage } from './modules/chat/entities/chat.entity';
+import { Review } from './modules/review/entities/review.entity';
+import { Story } from './story/entities/story.entity';
 
 
 dotenv.config();
@@ -26,7 +28,7 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: [User, FarmerShop, Expert, Category, Product, Cart, News, NewsCategory, KnowledgeArticle, Notice, Slider, KnowledgeCategory, Order, OrderItem, ChatMessage], 
+  entities: [User, FarmerShop, Expert, Category, Product, Cart, News, NewsCategory, KnowledgeArticle, Notice, Slider, KnowledgeCategory, Order, OrderItem, ChatMessage, Review, Story], 
   migrations: ['src/database/migrations/*.ts'], // Use src migrations files
   synchronize: false,
 });

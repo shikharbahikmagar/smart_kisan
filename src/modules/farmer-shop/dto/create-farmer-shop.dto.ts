@@ -30,15 +30,12 @@ export class CreateFarmerShopDto {
   shopDescription?: string | null;
 
   @IsOptional()
-  @IsString()
-  shopImage?: string | null;
+  FarmCertificate?: string | null;
 
   @IsOptional()
-  @IsString()
   citizenshipFrontImage?: string | null;
 
   @IsOptional()
-  @IsString()
   citizenshipBackImage?: string | null;
 
   @IsNotEmpty()

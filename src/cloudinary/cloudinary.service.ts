@@ -80,8 +80,8 @@ export class CloudinaryService {
   }
 
   //upload farmer shop image to 'farmer-shop/images' folder
-  async uploadFarmerShopImage(file: Express.Multer.File): Promise<string> {
-    return this.uploadMedia(file, 'farmer-shop/images');
+  async uploadFarmerShopCertificateImage(file: Express.Multer.File): Promise<string> {
+    return this.uploadMedia(file, 'farmer-shop/images/certificate');
   }
 
   //upload farmer citizenship front image to 'farmer-shop/images/citizenship' folder

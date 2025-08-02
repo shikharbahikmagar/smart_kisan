@@ -131,6 +131,7 @@ export class OrdersController {
     return {
       message: 'Order details fetched successfully',
       data: {
+        productId: orderDetails.product.id,
         productName: orderDetails.product.name,
         productImage: orderDetails.product.image,
         quantity: orderDetails.quantity,
@@ -144,7 +145,7 @@ export class OrdersController {
         shippingCity: orderDetails.order.s_city,
         shippingProvince: orderDetails.order.s_province,
         shippingTole: orderDetails.order.s_tole,
-        orderStatus: orderDetails.order.order_status,
+        orderStatus: orderDetails.item_status,
         customer: {
           fullName: orderDetails.order.user.firstName + ' ' + orderDetails.order.user.lastName,
           email: orderDetails.order.user.email,

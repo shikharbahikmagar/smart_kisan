@@ -33,7 +33,7 @@ export class UpdateFarmerShopDto {
 
   @IsOptional()
   @IsString()
-  shopImage?: string | null;
+  FarmCertificate?: string | null;
 
   @IsOptional()
   @IsString()

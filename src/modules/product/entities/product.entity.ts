@@ -6,6 +6,7 @@ import { FarmerShop } from '../../farmer-shop/entities/farmer-shop.entity';
 import { Cart } from '../../carts/entities/cart.entity';
 import { Order } from '../../orders/entities/order.entity';
 import { OrderItem } from '../../../modules/order_items/entities/order_item.entity';
+import { Review } from '../../review/entities/review.entity';
 
 
 @Entity('products')
@@ -114,5 +115,10 @@ export class Product  extends BaseEntity{
 
     @OneToMany(() => Cart, (cart) => cart.product)
     carts: Cart[];
+
+    //user reveiews
+    @OneToMany(() => Review, (review) => review.product)
+    reviews: Review[];
+    
 
 }

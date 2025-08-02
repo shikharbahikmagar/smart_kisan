@@ -6,6 +6,8 @@ import { Expert } from '../../expert/entities/expert.entity';
 import { Cart } from '../../carts/entities/cart.entity';
 import { Order } from '../../orders/entities/order.entity';
 import { ChatMessage } from '../../chat/entities/chat.entity';
+import { Review } from '../../review/entities/review.entity';
+import { Story } from '../../../story/entities/story.entity';
 @Entity('users')
 export class User extends BaseEntity {
   @Column()
@@ -94,4 +96,13 @@ export class User extends BaseEntity {
 
   @OneToMany(() => ChatMessage, (chatMessage) => chatMessage.receiver)
   receivedMessages: ChatMessage[];
+
+  //relationship to reviews
+  @OneToMany(() => Review, (review) => review.user)
+  reviews: Review[];
+
+
+  //relationship to stories
+  @OneToOne(() => Story, (story) => story.farmer)
+  story: Story;
 }

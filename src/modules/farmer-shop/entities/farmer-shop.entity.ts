@@ -48,7 +48,7 @@ export class FarmerShop extends BaseEntity {
     type: 'varchar',
     nullable: true,
   })
-  shopImage?: string | null;
+  FarmCertificate?: string | null;
 
   @Column({
     type: 'varchar',

@@ -51,6 +51,7 @@ export class KnowledgeArticlesController {
       data: articles.map((item: KnowledgeArticle) => ({
         id: item.id,
         title: item.title,
+
         publishedAt: item.publishedAt,
         image: item.image,
       })),
@@ -59,8 +60,27 @@ export class KnowledgeArticlesController {
 
   @IsPublic()
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.knowledgeArticlesService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    
+    const article = await this.knowledgeArticlesService.findOne(+id);
+
+    return {
+      message: 'Knowledge Article retrieved successfully',
+      data: {
+        id: article.knowledgeArticle.id,
+        title: article.knowledgeArticle.title,
+        content: article.knowledgeArticle.content,
+        publishedAt: article.knowledgeArticle.publishedAt,
+        image: article.knowledgeArticle.image,
+        recentArticles: article.recentArticle.map((item: KnowledgeArticle) => ({
+          id: item.id,
+          title: item.title,
+          publishedAt: item.publishedAt,
+          image: item.image,
+        })),
+      },
+    };
+
   }
 
   @UseGuards(RolesGuard)
@@ -89,7 +109,9 @@ export class KnowledgeArticlesController {
 
   }
 
-  @Delete(':id')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @Get(':id/remove')
   async remove(@Param('id') id: string) {
     
     await this.knowledgeArticlesService.remove(+id);

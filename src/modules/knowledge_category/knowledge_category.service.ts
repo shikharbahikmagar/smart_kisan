@@ -37,10 +37,18 @@ export class KnowledgeCategoryService {
   
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} knowledgeCategory`;
-  }
+  //get knowledge category by id
+  async getCategoryDetail(id: number) {
+    
+    const category = await this.knowledgeCategoryRepository.findOneBy({ id });
 
+    if (!category) {
+      throw new Error(`Knowledge Category with id ${id} not found`);
+    }
+
+    return category;
+
+  }
 
   async update(id: number, data: UpdateKnowledgeCategoryDto) {
     

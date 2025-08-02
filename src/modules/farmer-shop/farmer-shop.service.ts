@@ -46,7 +46,7 @@ export class FarmerShopService {
         street: data.street,
         shopEmail: data.shopEmail,
         shopDescription: data.shopDescription,
-        shopImage: data.shopImage,
+        FarmCertificate: data.FarmCertificate,
         citizenshipFrontImage: data.citizenshipFrontImage,
         citizenshipBackImage: data.citizenshipBackImage,
         panNumber: data.panNumber,

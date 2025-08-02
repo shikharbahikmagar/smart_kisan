@@ -68,26 +68,42 @@ export class KnowledgeCategoryController {
 
   }
 
+  @IsPublic()
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.knowledgeCategoryService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+
+    // console.log(`Fetching knowledge category with ID: ${id}`);
+
+    const category = await this.knowledgeCategoryService.getCategoryDetail(+id);
+    if (!category) {
+      throw new Error('Knowledge Category not found');
+    }
+
+    return {
+      message: 'Knowledge Category fetched successfully',
+      data: {
+        id: category.id,
+        name: category.name,
+        description: category.description,
+        image: category.imageUrl,
+      }
+    }
   }
 
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
   @UseInterceptors(FileInterceptor('image'))
-  @Patch(':id/edit')
+  @Post(':id/edit')
   async update(@Param('id') id: string, @Body() data: UpdateKnowledgeCategoryDto, @UploadedFile() file: Express.Multer.File) {
 
-    if (!file) {
+    let imageUrl = '';
+    if (file) {
+      imageUrl = await this.cloudinaryService.uploadKnowledgeCategoryImage(file);
 
-      throw new Error('Image file is required');
-
+      data.imageUrl = imageUrl;
     }
 
-    const imageUrl = file ? await this.cloudinaryService.uploadKnowledgeCategoryImage(file) : '';
-
-    const updatedCategory =  await this.knowledgeCategoryService.update(+id, {...data, imageUrl: imageUrl});
+    const updatedCategory =  await this.knowledgeCategoryService.update(+id, {...data});
     return {
       message: 'Knowledge Category updated successfully',
       data: {
@@ -99,7 +115,7 @@ export class KnowledgeCategoryController {
 
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
-  @Delete(':id')
+  @Get(':id/remove')
   async remove(@Param('id') id: string) {
     
       await this.knowledgeCategoryService.remove(+id);
